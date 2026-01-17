@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Leilão</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: #111;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .btn-voltar {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: #007bff;
+            border-radius: 5px;
+        }
+        
+        .conteudo {
+            padding: 30px;
+        }
+        
+        .leilao-titulo {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .leilao-imagem {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .ativo { background: #28a745; color: white; }
+        .embreve { background: #ffc107; color: #333; }
+        .finalizado { background: #dc3545; color: white; }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .info-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .tempo-restante {
+            background: #ffc107;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .lance-section {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #28a745;
+        }
+        
+        .embreve-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #ffc107;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .btn-lance {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-lance:hover {
+            background: #218838;
+        }
+        
+        .btn-lance:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .historico-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #ffc107;
+        }
+        
+        .historico-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .historico-valor {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .historico-info {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .alerta {
+            background: #fff3cd;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .historico-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        /* Modal de Inscrição */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .btn-modal {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn-confirmar {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-cancelar {
+            background: #6c757d;
+            color: white;
+        }
+        
+        /* Seção de Participantes */
+        .participar-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #2196f3;
+        }
+        
+        .btn-participar {
+            width: 100%;
+            padding: 15px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn-participar:hover {
+            background: #1976d2;
+        }
+        
+        .participante-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="silvv.png" class="logo" alt="Logo">
+            <a href="leilao.html" class="btn-voltar">← Voltar</a>
+        </div>
+        
+        <div class="conteudo">
+            <div id="detalhes">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h2>Carregando leilão...</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Inscrição -->
+    <div id="modalInscricao" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">📝 Participar do Leilão</h2>
+            <p>Para dar lances neste leilão, você precisa se inscrever primeiro.</p>
+            
+            <div class="form-group">
+                <label for="participanteNome">Seu Nome Completo:</label>
+                <input type="text" id="participanteNome" class="form-control" placeholder="Digite seu nome completo">
+            </div>
+            
+            <div class="form-group">
+                <label for="participanteContato">Número para Contato (WhatsApp):</label>
+                <input type="tel" id="participanteContato" class="form-control" placeholder="(11) 99999-9999">
+            </div>
+            
+            <div class="form-group">
+                <label for="participanteEmail">E-mail (opcional):</label>
+                <input type="email" id="participanteEmail" class="form-control" placeholder="seu@email.com">
+            </div>
+            
+            <button onclick="confirmarInscricao()" class="btn-modal btn-confirmar">
+                ✅ Confirmar Inscrição
+            </button>
+            
+            <button onclick="fecharModalInscricao()" class="btn-modal btn-cancelar">
+                Cancelar
+            </button>
+            
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                <strong>Nota:</strong> Seu contato será visível apenas para o administrador do sistema.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // FUNÇÃO PARA FORMATAR MOEDA BRASILEIRA
+        function formatarMoedaBrasileira(valor) {
+            const numero = parseFloat(valor) || 0;
+            return numero.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // CONFIGURAÇÕES DO FIREBASE - COLE SUAS CONFIGURAÇÕES AQUI!
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUVYrABD2y8nwIxO2afcycy8hmAZXeNk4",
+            authDomain: "silv-con.firebaseapp.com",
+            projectId: "silv-con",
+            storageBucket: "silv-con.appspot.com",
+            messagingSenderId: "926010379425",
+            appId: "1:926010379425:web:76c69909192d7237768c4f",
+            measurementId: "G-QR4Z6QBB9Q"
+        };
+
+        // VARIÁVEIS GLOBAIS
+        let db;
+        let leilaoId;
+        let leilaoData;
+        let listenerUnsubscribe = null;
+        let usuarioJaInscrito = false;
+        let participanteData = null;
+
+        // FUNÇÃO PARA CARREGAR SCRIPT
+        function carregarScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // INICIALIZAR FIREBASE
+        async function inicializarFirebase() {
+            try {
+                await carregarScript('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
+                await carregarScript('https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js');
+                
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                
+                console.log('Firebase inicializado');
+                carregarDadosLeilao();
+                
+            } catch (error) {
+                console.error('Erro ao carregar Firebase:', error);
+                mostrarErro('Erro de conexão com o servidor.');
+            }
+        }
+
+        // FUNÇÃO PARA CALCULAR STATUS DO LEILÃO
+        function calcularStatusLeilao(inicio, fim) {
+            const agora = new Date();
+            let dataInicio, dataFim;
+            
+            try {
+                dataInicio = inicio ? 
+                    (inicio.toDate ? inicio.toDate() : new Date(inicio)) : 
+                    new Date();
+                dataFim = fim ? 
+                    (fim.toDate ? fim.toDate() : new Date(fim)) : 
+                    new Date();
+            } catch (e) {
+                console.error('Erro ao converter datas:', e);
+                return 'encerrado';
+            }
+            
+            if (agora < dataInicio) return 'em-breve';
+            if (agora >= dataInicio && agora <= dataFim) return 'ativo';
+            return 'encerrado';
+        }
+
+        // FUNÇÃO PARA FORMATAR DATA
+        function formatarData(data) {
+            if (!data) return 'Data não definida';
+            try {
+                const date = data.toDate ? data.toDate() : new Date(data);
+                return date.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return 'Data inválida';
+            }
+        }
+
+        // VERIFICAR SE USUÁRIO JÁ ESTÁ INSCRITO
+        async function verificarInscricaoUsuario() {
+            try {
+                // Verificar se há dados no localStorage
+                const participanteSalvo = localStorage.getItem(`participante_${leilaoId}`);
+                
+                if (participanteSalvo) {
+                    participanteData = JSON.parse(participanteSalvo);
+                    usuarioJaInscrito = true;
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('Erro ao verificar inscrição:', error);
+                return false;
+            }
+        }
+
+        // CARREGAR DADOS DO LEILÃO
+        async function carregarDadosLeilao() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                leilaoId = params.get('id');
+                
+                if (!leilaoId) {
+                    mostrarErro('Leilão não especificado.');
+                    return;
+                }
+                
+                const docRef = db.collection('leiloes').doc(leilaoId);
+                const docSnap = await docRef.get();
+                
+                if (docSnap.exists) {
+                    leilaoData = docSnap.data();
+                    leilaoData.id = leilaoId;
+                    
+                    // Verificar se usuário já está inscrito
+                    await verificarInscricaoUsuario();
+                    exibirLeilao();
+                    
+                    // Escutar atualizações em tempo real do leilão
+                    listenerUnsubscribe = docRef.onSnapshot((snapshot) => {
+                        if (snapshot.exists) {
+                            leilaoData = snapshot.data();
+                            leilaoData.id = leilaoId;
+                            exibirLeilao();
+                            
+                            // Verificar se leilão acabou de ser encerrado
+                            const statusAtual = calcularStatusLeilao(leilaoData.inicio, leilaoData.fim);
+                            if (statusAtual === 'encerrado' && leilaoData.maiorLanceUid) {
+                                verificarNotificacaoEncerramento();
+                            }
+                        }
+                    }, (error) => {
+                        console.error('Erro ao escutar atualizações:', error);
+                    });
+                    
+                    // Carregar histórico de lances com delay para garantir que o elemento exista
+                    setTimeout(() => {
+                        carregarHistoricoLances();
+                    }, 500);
+                    
+                } else {
+                    mostrarErro('Leilão não encontrado.');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar leilão:', error);
+                mostrarErro('Erro ao carregar dados do leilão: ' + error.message);
+            }
+        }
+
+        // VERIFICAR SE JÁ FOI CRIADA NOTIFICAÇÃO DE ENCERRAMENTO
+        async function verificarNotificacaoEncerramento() {
+            try {
+                // Verificar se já existe notificação para este leilão
+                const notificacoesRef = db.collection('notificacoes');
+                const query = notificacoesRef.where('leilaoId', '==', leilaoId);
+                const snapshot = await query.get();
+                
+                if (snapshot.empty) {
+                    // Criar notificação para o ADM
+                    await criarNotificacaoEncerramento();
+                }
+            } catch (error) {
+                console.error('Erro ao verificar notificações:', error);
+            }
+        }
+
+        // CRIAR NOTIFICAÇÃO DE ENCERRAMENTO PARA O ADM
+        async function criarNotificacaoEncerramento() {
+            try {
+                // Buscar dados do vencedor
+                const vencedorNome = leilaoData.maiorLanceUid;
+                let vencedorContato = 'Não informado';
+                
+                // Tentar buscar contato do vencedor nos participantes
+                if (vencedorNome) {
+                    const participantesRef = db.collection('participantes');
+                    const query = participantesRef.where('leilaoId', '==', leilaoId)
+                                                 .where('nome', '==', vencedorNome);
+                    const snapshot = await query.get();
+                    
+                    if (!snapshot.empty) {
+                        const participante = snapshot.docs[0].data();
+                        vencedorContato = participante.contato || 'Não informado';
+                    }
+                }
+                
+                // Criar notificação
+                const notificacao = {
+                    leilaoId: leilaoId,
+                    leilaoTitulo: leilaoData.titulo,
+                    vencedorNome: vencedorNome || 'Não houve vencedor',
+                    vencedorContato: vencedorContato,
+                    valorFinal: leilaoData.maiorLance || leilaoData.valorInicial,
+                    dataEncerramento: new Date().toISOString(),
+                    dataCriacao: new Date().toISOString(),
+                    lida: false,
+                    tipo: 'leilao_encerrado'
+                };
+                
+                await db.collection('notificacoes').add(notificacao);
+                console.log('✅ Notificação de encerramento criada para o ADM');
+                
+            } catch (error) {
+                console.error('Erro ao criar notificação:', error);
+            }
+        }
+
+        // ABRIR MODAL DE INSCRIÇÃO
+        function abrirModalInscricao() {
+            document.getElementById('modalInscricao').style.display = 'flex';
+        }
+
+        // FECHAR MODAL DE INSCRIÇÃO
+        function fecharModalInscricao() {
+            document.getElementById('modalInscricao').style.display = 'none';
+        }
+
+        // CONFIRMAR INSCRIÇÃO
+        async function confirmarInscricao() {
+            try {
+                const nome = document.getElementById('participanteNome').value.trim();
+                const contato = document.getElementById('participanteContato').value.trim();
+                const email = document.getElementById('participanteEmail').value.trim();
+                
+                if (!nome || !contato) {
+                    alert('Por favor, preencha pelo menos nome e contato!');
+                    return;
+                }
+                
+                // Criar objeto do participante
+                participanteData = {
+                    nome: nome,
+                    contato: contato,
+                    email: email || '',
+                    leilaoId: leilaoId,
+                    leilaoTitulo: leilaoData.titulo,
+                    dataInscricao: new Date().toISOString(),
+                    timestamp: Date.now()
+                };
+                
+                // Salvar no Firestore
+                await db.collection('participantes').add(participanteData);
+                
+                // Salvar no localStorage para facilitar acesso futuro
+                localStorage.setItem(`participante_${leilaoId}`, JSON.stringify(participanteData));
+                
+                usuarioJaInscrito = true;
+                
+                alert('✅ Inscrição realizada com sucesso! Agora você pode dar lances neste leilão.');
+                fecharModalInscricao();
+                exibirLeilao(); // Atualizar a exibição
+                
+            } catch (error) {
+                console.error('Erro ao realizar inscrição:', error);
+                alert('Erro ao realizar inscrição: ' + error.message);
+            }
+        }
+
+        // CARREGAR HISTÓRICO DE LANCES
+        async function carregarHistoricoLances() {
+            try {
+                console.log('=== INICIANDO CARREGAMENTO DO HISTÓRICO ===');
+                console.log('Leilão ID:', leilaoId);
+                
+                // Primeiro buscar dados diretamente
+                const lancesRef = db.collection('leiloes').doc(leilaoId).collection('lances');
+                const snapshot = await lancesRef.orderBy('timestamp', 'asc').get();
+                
+                console.log('Total de documentos encontrados:', snapshot.size);
+                
+                if (snapshot.empty) {
+                    console.log('Nenhum lance encontrado no banco de dados');
+                    if (document.getElementById('historicoLances')) {
+                        document.getElementById('historicoLances').innerHTML = '<p>Nenhum lance registrado ainda.</p>';
+                    }
+                    return;
+                }
+                
+                // Processar lances
+                const lances = [];
+                snapshot.forEach(doc => {
+                    const lanceData = doc.data();
+                    console.log('Lance encontrado:', lanceData);
+                    lances.push({ id: doc.id, ...lanceData });
+                });
+                
+                console.log('Total de lances processados:', lances.length);
+                
+                // Inverter para exibição (do mais recente para o mais antigo)
+                lances.reverse();
+                
+                let html = '<div class="historico-container">';
+                let numero = 1;
+                
+                lances.forEach(lance => {
+                    // Formatar data
+                    let dataFormatada;
+                    try {
+                        if (lance.data) {
+                            dataFormatada = new Date(lance.data).toLocaleString('pt-BR');
+                        } else if (lance.timestamp) {
+                            dataFormatada = new Date(lance.timestamp).toLocaleString('pt-BR');
+                        } else {
+                            dataFormatada = 'Data desconhecida';
+                        }
+                    } catch (e) {
+                        console.error('Erro ao formatar data:', e);
+                        dataFormatada = 'Data inválida';
+                    }
+                    
+                    html += `
+                        <div class="historico-item">
+                            <div>
+                                <div class="historico-valor">${formatarMoedaBrasileira(lance.valor || 0)}</div>
+                                <div class="historico-info">
+                                    <strong>Por:</strong> ${lance.nomeUsuario || 'Anônimo'}
+                                </div>
+                            </div>
+                            <div class="historico-info">
+                                <div>${dataFormatada}</div>
+                                <div><strong>N°:</strong> ${numero}</div>
+                            </div>
+                        </div>
+                    `;
+                    numero++;
+                });
+                
+                html += '</div>';
+                
+                // Inserir no DOM quando estiver pronto
+                const inserirNoDOM = () => {
+                    const div = document.getElementById('historicoLances');
+                    if (div) {
+                        div.innerHTML = html;
+                        console.log('✅ Histórico inserido no DOM com sucesso!');
+                    } else {
+                        console.log('⚠️ Elemento historicoLances não encontrado, tentando novamente em 100ms');
+                        setTimeout(inserirNoDOM, 100);
+                    }
+                };
+                
+                inserirNoDOM();
+                
+            } catch (error) {
+                console.error('❌ ERRO CRÍTICO ao carregar histórico:', error);
+                console.error('Stack trace:', error.stack);
+                
+                const historicoDiv = document.getElementById('historicoLances');
+                if (historicoDiv) {
+                    historicoDiv.innerHTML = `
+                        <div class="error">
+                            <p>Erro ao carregar histórico de lances: ${error.message}</p>
+                            <button onclick="carregarHistoricoLances()" style="margin-top: 10px; padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Tentar novamente
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // EXIBIR LEILÃO
+        function exibirLeilao() {
+            const valorAtual = leilaoData.maiorLance || leilaoData.valorInicial || 0;
+            const lanceMinimo = leilaoData.lanceMinimo || 1;
+            const proximoLance = valorAtual + lanceMinimo;
+            
+            // CALCULAR STATUS
+            const status = calcularStatusLeilao(leilaoData.inicio, leilaoData.fim);
+            
+            let statusClasse, statusTexto;
+            switch(status) {
+                case 'em-breve':
+                    statusClasse = 'embreve';
+                    statusTexto = 'EM BREVE';
+                    break;
+                case 'ativo':
+                    statusClasse = 'ativo';
+                    statusTexto = 'ATIVO';
+                    break;
+                case 'encerrado':
+                    statusClasse = 'finalizado';
+                    statusTexto = 'FINALIZADO';
+                    break;
+                default:
+                    statusClasse = 'finalizado';
+                    statusTexto = 'FINALIZADO';
+            }
+            
+            // CALCULAR TEMPO RESTANTE
+            let tempoRestanteTexto = '';
+            
+            try {
+                const dataInicio = leilaoData.inicio ? 
+                    (leilaoData.inicio.toDate ? leilaoData.inicio.toDate() : new Date(leilaoData.inicio)) : 
+                    null;
+                const dataFim = leilaoData.fim ? 
+                    (leilaoData.fim.toDate ? leilaoData.fim.toDate() : new Date(leilaoData.fim)) : 
+                    null;
+                const agora = new Date();
+                
+                if (status === 'em-breve' && dataInicio) {
+                    const diff = dataInicio - agora;
+                    if (diff > 0) {
+                        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        
+                        if (dias > 0) tempoRestanteTexto = `Início em: ${dias} dia(s) e ${horas} hora(s)`;
+                        else if (horas > 0) tempoRestanteTexto = `Início em: ${horas} hora(s) e ${minutos} minuto(s)`;
+                        else tempoRestanteTexto = `Início em: ${minutos} minuto(s)`;
+                    }
+                } else if (status === 'ativo' && dataFim) {
+                    const diff = dataFim - agora;
+                    if (diff > 0) {
+                        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        
+                        if (dias > 0) tempoRestanteTexto = `Termina em: ${dias} dia(s) e ${horas} hora(s)`;
+                        else if (horas > 0) tempoRestanteTexto = `Termina em: ${horas} hora(s) e ${minutos} minuto(s)`;
+                        else tempoRestanteTexto = `Termina em: ${minutos} minuto(s)`;
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao calcular tempo:', e);
+            }
+            
+            // CONTADOR DE LANCES
+            const totalLances = leilaoData.totalLances || 0;
+            
+            // Tratar imagem corretamente
+            let imagemSrc = leilaoData.imagem || 'https://via.placeholder.com/800x400/ccc/666?text=Imagem+do+Leilão';
+            
+            // CRIAR HTML
+            let html = `
+                <h1 class="leilao-titulo">${leilaoData.titulo || 'Leilão'}</h1>
+                
+                <span class="status-badge ${statusClasse}">${statusTexto}</span>
+                
+                <img src="${imagemSrc}" 
+                     class="leilao-imagem" 
+                     alt="${leilaoData.titulo}"
+                     onerror="this.src='https://via.placeholder.com/800x400/ccc/666?text=Imagem+Indisponível'">
+                
+                ${tempoRestanteTexto ? `
+                    <div class="tempo-restante">
+                        ⏰ ${tempoRestanteTexto}
+                    </div>
+                ` : ''}
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">LANCE ATUAL</div>
+                        <div class="info-value">${formatarMoedaBrasileira(valorAtual)}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">LANCE MÍNIMO</div>
+                        <div class="info-value">${formatarMoedaBrasileira(lanceMinimo)}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">PRÓXIMO LANCE MÍNIMO</div>
+                        <div class="info-value">${formatarMoedaBrasileira(proximoLance)}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">TOTAL DE LANCES</div>
+                        <div class="info-value">${totalLances}</div>
+                    </div>
+                </div>
+            `;
+            
+            // SEÇÃO DE INSCRIÇÃO PARA LEILÕES ATIVOS OU EM BREVE
+            if (status !== 'encerrado') {
+                if (!usuarioJaInscrito) {
+                    html += `
+                        <div class="participar-section">
+                            <h3>📝 PARTICIPAR DO LEILÃO</h3>
+                            <p>Para dar lances neste leilão, você precisa se inscrever primeiro.</p>
+                            <p><strong>Seu contato será visível apenas para o administrador.</strong></p>
+                            <button onclick="abrirModalInscricao()" class="btn-participar">
+                                📝 Inscrever-se para Participar
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="participante-info">
+                            <h3>✅ VOCÊ ESTÁ INSCRITO!</h3>
+                            <p><strong>Nome:</strong> ${participanteData.nome}</p>
+                            <p><strong>Contato:</strong> ${participanteData.contato}</p>
+                            ${participanteData.email ? `<p><strong>E-mail:</strong> ${participanteData.email}</p>` : ''}
+                            <p style="margin-top: 10px; font-style: italic;">
+                                Agora você pode dar lances neste leilão.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // SEÇÃO DE LANCES (APENAS PARA USUÁRIOS INSCRITOS E LEILÃO ATIVO)
+            if (status === 'ativo' && usuarioJaInscrito) {
+                html += `
+                    <div class="lance-section">
+                        <h3>🏆 FAÇA SEU LANCE</h3>
+                        <div class="form-group">
+                            <label for="valorLance">Valor do Lance (mínimo: ${formatarMoedaBrasileira(proximoLance)})</label>
+                            <input type="number" 
+                                   id="valorLance" 
+                                   class="form-control" 
+                                   min="${proximoLance}"
+                                   step="1"
+                                   value="${proximoLance}">
+                        </div>
+                        
+                        <button onclick="darLance()" class="btn-lance">
+                            🏆 DAR LANCE AGORA
+                        </button>
+                        
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                            <strong>Nota:</strong> Seu lance será registrado em nome de: <strong>${participanteData.nome}</strong>
+                        </p>
+                    </div>
+                `;
+            } else if (status === 'ativo' && !usuarioJaInscrito) {
+                html += `
+                    <div class="alerta">
+                        <h3>⚠️ INSCRIÇÃO NECESSÁRIA</h3>
+                        <p>Para dar lances neste leilão, você precisa se inscrever primeiro.</p>
+                        <button onclick="abrirModalInscricao()" class="btn-participar">
+                            📝 Inscrever-se Agora
+                        </button>
+                    </div>
+                `;
+            } else if (status === 'em-breve') {
+                html += `
+                    <div class="embreve-section">
+                        <h3>⏳ LEILÃO EM BREVE</h3>
+                        <p>Este leilão ainda não começou. Aguarde a data de início:</p>
+                        <p><strong>Início:</strong> ${formatarData(leilaoData.inicio)}</p>
+                        <p><strong>Término:</strong> ${formatarData(leilaoData.fim)}</p>
+                        <p style="margin-top: 10px; font-style: italic;">
+                            Você poderá dar lances quando o leilão estiver ativo.
+                        </p>
+                    </div>
+                `;
+            } else if (status === 'encerrado') {
+                html += `
+                    <div class="error">
+                        <h3>⛔ LEILÃO FINALIZADO</h3>
+                        <p>Este leilão já foi encerrado.</p>
+                        <p><strong>Valor final:</strong> ${formatarMoedaBrasileira(valorAtual)}</p>
+                        ${leilaoData.maiorLanceUid ? `<p><strong>Vencedor:</strong> ${leilaoData.maiorLanceUid}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="historico-section">
+                    <h3>📜 HISTÓRICO DE LANCES</h3>
+                    <div id="historicoLances">
+                        <p>Carregando histórico...</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detalhes').innerHTML = html;
+        }
+
+        // DAR LANCE
+        window.darLance = async function() {
+            try {
+                if (!usuarioJaInscrito || !participanteData) {
+                    alert('Você precisa se inscrever primeiro para dar lances!');
+                    abrirModalInscricao();
+                    return;
+                }
+                
+                const valorLance = parseFloat(document.getElementById('valorLance').value);
+                
+                // VALIDAÇÕES
+                if (!valorLance || isNaN(valorLance) || valorLance <= 0) {
+                    alert('Digite um valor válido para o lance!');
+                    return;
+                }
+                
+                // VERIFICAR SE O LEILÃO AINDA ESTÁ ATIVO
+                const statusAtual = calcularStatusLeilao(leilaoData.inicio, leilaoData.fim);
+                if (statusAtual !== 'ativo') {
+                    alert('Este leilão não está mais ativo. Atualize a página.');
+                    return;
+                }
+                
+                const docRef = db.collection('leiloes').doc(leilaoId);
+                
+                // VERIFICAR VALOR MÍNIMO
+                const valorAtual = leilaoData.maiorLance || leilaoData.valorInicial || 0;
+                const lanceMinimo = leilaoData.lanceMinimo || 1;
+                const proximoMinimo = valorAtual + lanceMinimo;
+                
+                if (valorLance < proximoMinimo) {
+                    alert(`Lance muito baixo! O próximo lance mínimo é ${formatarMoedaBrasileira(proximoMinimo)}`);
+                    return;
+                }
+                
+                // CONFIRMAR LANCE
+                if (!confirm(`Confirmar lance de ${formatarMoedaBrasileira(valorLance)}?\n\nNome: ${participanteData.nome}\nContato: ${participanteData.contato}`)) {
+                    return;
+                }
+                
+                // CRIAR OBJETO DO LANCE
+                const lance = {
+                    valor: valorLance,
+                    nomeUsuario: participanteData.nome,
+                    contatoUsuario: participanteData.contato,
+                    data: new Date().toISOString(),
+                    timestamp: Date.now(),
+                    leilaoId: leilaoId,
+                    leilaoTitulo: leilaoData.titulo
+                };
+                
+                // ATUALIZAR LEILÃO E ADICIONAR LANCE AO HISTÓRICO
+                const batch = db.batch();
+                
+                // Atualizar documento do leilão
+                batch.update(docRef, {
+                    maiorLance: valorLance,
+                    maiorLanceUid: participanteData.nome,
+                    totalLances: firebase.firestore.FieldValue.increment(1),
+                    ultimaAtualizacao: new Date().toISOString()
+                });
+                
+                // Adicionar lance ao histórico (subcoleção)
+                const lanceRef = docRef.collection('lances').doc();
+                batch.set(lanceRef, lance);
+                
+                // EXECUTAR BATCH
+                await batch.commit();
+                
+                console.log('Lance realizado com sucesso!');
+                
+                // Recarregar o histórico após dar lance
+                setTimeout(() => {
+                    carregarHistoricoLances();
+                }, 1000);
+                
+                // Mostrar mensagem de sucesso
+                alert('✅ Lance realizado com sucesso!');
+                
+                // Recarregar dados do leilão para atualizar valores
+                const docSnap = await docRef.get();
+                if (docSnap.exists) {
+                    leilaoData = docSnap.data();
+                    leilaoData.id = leilaoId;
+                    exibirLeilao();
+                }
+                
+            } catch (error) {
+                console.error('Erro ao dar lance:', error);
+                alert('Erro ao dar lance: ' + error.message);
+            }
+        };
+
+        // FUNÇÕES AUXILIARES
+        window.recarregarPagina = function() {
+            location.reload();
+        };
+
+        function mostrarErro(mensagem) {
+            document.getElementById('detalhes').innerHTML = `
+                <div class="error">
+                    <h3>⚠️ ERRO</h3>
+                    <p>${mensagem}</p>
+                    <div style="margin-top: 20px;">
+                        <a href="leilao.html" class="btn-voltar" style="display: inline-block; margin-right: 10px;">
+                            Voltar para Leilões
+                        </a>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // LISTENER para recarregar histórico quando voltar à página
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible' && leilaoId) {
+                console.log('🔄 Página voltou ao foco, recarregando histórico...');
+                setTimeout(() => {
+                    carregarHistoricoLances();
+                }, 1000);
+            }
+        });
+
+        // LIMPAR LISTENER AO SAIR DA PÁGINA
+        window.addEventListener('beforeunload', () => {
+            if (listenerUnsubscribe) {
+                listenerUnsubscribe();
+            }
+        });
+
+        // INICIAR QUANDO A PÁGINA CARREGAR
+        window.onload = inicializarFirebase;
+    </script>
+</body>
+</html>

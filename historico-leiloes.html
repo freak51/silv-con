@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leilões Realizados - SilvCon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            height: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+        }
+        
+        .btn-voltar {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-voltar:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .filtros {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filtro-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filtro-group input,
+        .filtro-group select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+        
+        .btn-filtrar {
+            padding: 10px 20px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-limpar {
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .grid-leiloes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .leilao-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .leilao-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .leilao-imagem {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .leilao-conteudo {
+            padding: 20px;
+        }
+        
+        .leilao-titulo {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .leilao-info {
+            margin: 15px 0;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .info-valor {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .vencedor {
+            background: #e8f6f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #1abc9c;
+        }
+        
+        .vencedor h4 {
+            color: #16a085;
+            margin-bottom: 5px;
+        }
+        
+        .status-finalizado {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .btn-detalhes {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .btn-detalhes:hover {
+            background: #2980b9;
+        }
+        
+        .sem-leiloes {
+            text-align: center;
+            padding: 50px;
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sem-leiloes h3 {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-numero {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1 / -1;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-leiloes {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .filtro-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filtro-group input,
+            .filtro-group select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1>📜 Leilões Realizados</h1>
+                    <p class="subtitle">Histórico completo de todos os leilões finalizados</p>
+                </div>
+                <a href="leilao.html" class="btn-voltar">← Voltar para Leilões Ativos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="stats" id="estatisticas">
+            <div class="stat-card">
+                <div class="stat-numero" id="totalLeiloes">0</div>
+                <div class="stat-label">Leilões Realizados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-numero" id="totalArrecadado">R$ 0</div>
+                <div class="stat-label">Valor Total Arrecadado</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-numero" id="mediaValores">R$ 0</div>
+                <div class="stat-label">Valor Médio por Leilão</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-numero" id="totalLances">0</div>
+                <div class="stat-label">Total de Lances</div>
+            </div>
+        </div>
+        
+        <div class="filtros">
+            <h3>🔍 Filtrar Leilões</h3>
+            <div class="filtro-group">
+                <input type="text" id="filtroTitulo" placeholder="Buscar por título...">
+                <input type="date" id="filtroDataInicio" placeholder="Data início">
+                <input type="date" id="filtroDataFim" placeholder="Data fim">
+                <select id="filtroOrdenar">
+                    <option value="data_desc">Mais Recentes</option>
+                    <option value="data_asc">Mais Antigos</option>
+                    <option value="valor_desc">Maior Valor</option>
+                    <option value="valor_asc">Menor Valor</option>
+                </select>
+                <button class="btn-filtrar" onclick="aplicarFiltros()">Filtrar</button>
+                <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+            </div>
+        </div>
+        
+        <div class="grid-leiloes" id="listaLeiloes">
+            <div class="loading">
+                <div class="spinner"></div>
+                <h3>Carregando leilões realizados...</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script>
+        // FUNÇÃO PARA FORMATAR MOEDA BRASILEIRA
+function formatarMoedaBrasileira(valor) {
+  const numero = parseFloat(valor) || 0;
+  return numero.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+        // Configurações do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA...", // SUA API KEY
+            authDomain: "silv-con.firebaseapp.com",
+            projectId: "silv-con",
+            storageBucket: "silv-con.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Variáveis
+        let todosLeiloes = [];
+        let filtrosAtivos = false;
+        
+        // Carregar leilões realizados
+        async function carregarLeiloesRealizados() {
+            try {
+                console.log('Carregando leilões realizados...');
+                
+                const querySnapshot = await db.collection('leiloes')
+                    .where('status', '==', 'finalizado')
+                    .get();
+                
+                todosLeiloes = [];
+                let totalArrecadado = 0;
+                let totalLances = 0;
+                
+                querySnapshot.forEach((doc) => {
+                    const leilao = doc.data();
+                    leilao.id = doc.id;
+                    
+                    // Calcular estatísticas
+                    const valorFinal = leilao.maiorLance || leilao.valorInicial || 0;
+                    totalArrecadado += valorFinal;
+                    totalLances += leilao.totalLances || 0;
+                    
+                    todosLeiloes.push(leilao);
+                });
+                
+                // Atualizar estatísticas
+                document.getElementById('totalLeiloes').textContent = todosLeiloes.length;
+                document.getElementById('totalArrecadado').textContent = formatarMoedaBrasileira(totalArrecadado);
+                document.getElementById('mediaValores').textContent = todosLeiloes.length > 0 ? 
+                    formatarMoedaBrasileira(totalArrecadado / todosLeiloes.length) : formatarMoedaBrasileira(0);
+                document.getElementById('totalLances').textContent = totalLances;
+                
+                // Aplicar ordenação padrão
+                aplicarOrdenacao('data_desc');
+                
+            } catch (error) {
+                console.error('Erro ao carregar leilões:', error);
+                mostrarErro('Erro ao carregar leilões realizados.');
+            }
+        }
+        
+        // Exibir leilões
+        function exibirLeiloes(leiloes) {
+            const container = document.getElementById('listaLeiloes');
+            
+            if (leiloes.length === 0) {
+                container.innerHTML = `
+                    <div class="sem-leiloes">
+                        <h3>📭 Nenhum leilão encontrado</h3>
+                        <p>${filtrosAtivos ? 'Tente alterar os filtros.' : 'Nenhum leilão foi finalizado ainda.'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            leiloes.forEach((leilao) => {
+                // Formatar datas
+                function formatarData(timestamp) {
+                    if (!timestamp) return 'Data não disponível';
+                    try {
+                        const data = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                        return data.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } catch {
+                        return 'Data inválida';
+                    }
+                }
+                
+                // Formatar valor
+                const valorFinal = leilao.maiorLance || leilao.valorInicial || 0;
+                const lanceMinimo = leilao.lanceMinimo || 1;
+                const totalLances = leilao.totalLances || 0;
+                
+                const card = document.createElement('div');
+                card.className = 'leilao-card';
+                card.innerHTML = `
+                    <img src="${leilao.imagem || 'https://via.placeholder.com/350x200/ccc/666?text=Leilão+Finalizado'}" 
+                         class="leilao-imagem" 
+                         alt="${leilao.titulo}"
+                         onerror="this.src='https://via.placeholder.com/350x200/ccc/666?text=Imagem+Indispon%C3%ADvel'">
+                    
+                    <div class="leilao-conteudo">
+                        <span class="status-finalizado">FINALIZADO</span>
+                        <h3 class="leilao-titulo">${leilao.titulo || 'Leilão sem título'}</h3>
+                        
+                        <div class="leilao-info">
+                            <div class="info-item">
+                                <span class="info-label">Valor Final:</span>
+                                <span class="info-valor">R$ ${valorFinal.toFixed(2)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Valor Inicial:</span>
+                                <span class="info-valor">R$ ${(leilao.valorInicial || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Total de Lances:</span>
+                                <span class="info-valor">${totalLances}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Encerrado em:</span>
+                                <span class="info-valor">${formatarData(leilao.finalizadoEm || leilao.fim)}</span>
+                            </div>
+                        </div>
+                        
+                        ${leilao.maiorLanceUid ? `
+                            <div class="vencedor">
+                                <h4>🏆 VENCEDOR</h4>
+                                <p><strong>Usuário:</strong> ${leilao.maiorLanceUid}</p>
+                                <p><strong>Lance Vencedor:</strong> R$ ${valorFinal.toFixed(2)}</p>
+                            </div>
+                        ` : `
+                            <div class="vencedor">
+                                <h4>ℹ️ INFORMAÇÃO</h4>
+                                <p>Este leilão não teve lances registrados.</p>
+                            </div>
+                        `}
+                        
+                        <button class="btn-detalhes" onclick="verDetalhesLeilao('${leilao.id}')">
+                            📋 Ver Detalhes Completos
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Aplicar filtros
+        function aplicarFiltros() {
+            const titulo = document.getElementById('filtroTitulo').value.toLowerCase();
+            const dataInicio = document.getElementById('filtroDataInicio').value;
+            const dataFim = document.getElementById('filtroDataFim').value;
+            const ordenar = document.getElementById('filtroOrdenar').value;
+            
+            let leiloesFiltrados = [...todosLeiloes];
+            
+            // Filtrar por título
+            if (titulo) {
+                leiloesFiltrados = leiloesFiltrados.filter(leilao => 
+                    leilao.titulo && leilao.titulo.toLowerCase().includes(titulo)
+                );
+                filtrosAtivos = true;
+            }
+            
+            // Filtrar por data de início
+            if (dataInicio) {
+                const dataInicioObj = new Date(dataInicio);
+                leiloesFiltrados = leiloesFiltrados.filter(leilao => {
+                    if (!leilao.finalizadoEm && !leilao.fim) return false;
+                    
+                    let dataLeilao;
+                    if (leilao.finalizadoEm && leilao.finalizadoEm.toDate) {
+                        dataLeilao = leilao.finalizadoEm.toDate();
+                    } else if (leilao.finalizadoEm) {
+                        dataLeilao = new Date(leilao.finalizadoEm);
+                    } else if (leilao.fim && leilao.fim.toDate) {
+                        dataLeilao = leilao.fim.toDate();
+                    } else {
+                        dataLeilao = new Date(leilao.fim);
+                    }
+                    
+                    return dataLeilao >= dataInicioObj;
+                });
+                filtrosAtivos = true;
+            }
+            
+            // Filtrar por data de fim
+            if (dataFim) {
+                const dataFimObj = new Date(dataFim);
+                dataFimObj.setHours(23, 59, 59, 999); // Fim do dia
+                
+                leiloesFiltrados = leiloesFiltrados.filter(leilao => {
+                    if (!leilao.finalizadoEm && !leilao.fim) return false;
+                    
+                    let dataLeilao;
+                    if (leilao.finalizadoEm && leilao.finalizadoEm.toDate) {
+                        dataLeilao = leilao.finalizadoEm.toDate();
+                    } else if (leilao.finalizadoEm) {
+                        dataLeilao = new Date(leilao.finalizadoEm);
+                    } else if (leilao.fim && leilao.fim.toDate) {
+                        dataLeilao = leilao.fim.toDate();
+                    } else {
+                        dataLeilao = new Date(leilao.fim);
+                    }
+                    
+                    return dataLeilao <= dataFimObj;
+                });
+                filtrosAtivos = true;
+            }
+            
+            // Aplicar ordenação
+            aplicarOrdenacao(ordenar, leiloesFiltrados);
+        }
+        
+        // Aplicar ordenação
+        function aplicarOrdenacao(tipoOrdenacao, leiloes = todosLeiloes) {
+            const leiloesOrdenados = [...leiloes];
+            
+            switch (tipoOrdenacao) {
+                case 'data_desc':
+                    leiloesOrdenados.sort((a, b) => {
+                        const dataA = a.finalizadoEm || a.fim || a.criadoEm;
+                        const dataB = b.finalizadoEm || b.fim || b.criadoEm;
+                        return new Date(dataB) - new Date(dataA);
+                    });
+                    break;
+                    
+                case 'data_asc':
+                    leiloesOrdenados.sort((a, b) => {
+                        const dataA = a.finalizadoEm || a.fim || a.criadoEm;
+                        const dataB = b.finalizadoEm || b.fim || b.criadoEm;
+                        return new Date(dataA) - new Date(dataB);
+                    });
+                    break;
+                    
+                case 'valor_desc':
+                    leiloesOrdenados.sort((a, b) => {
+                        const valorA = a.maiorLance || a.valorInicial || 0;
+                        const valorB = b.maiorLance || b.valorInicial || 0;
+                        return valorB - valorA;
+                    });
+                    break;
+                    
+                case 'valor_asc':
+                    leiloesOrdenados.sort((a, b) => {
+                        const valorA = a.maiorLance || a.valorInicial || 0;
+                        const valorB = b.maiorLance || b.valorInicial || 0;
+                        return valorA - valorB;
+                    });
+                    break;
+            }
+            
+            exibirLeiloes(leiloesOrdenados);
+        }
+        
+        // Limpar filtros
+        function limparFiltros() {
+            document.getElementById('filtroTitulo').value = '';
+            document.getElementById('filtroDataInicio').value = '';
+            document.getElementById('filtroDataFim').value = '';
+            document.getElementById('filtroOrdenar').value = 'data_desc';
+            
+            filtrosAtivos = false;
+            aplicarOrdenacao('data_desc');
+        }
+        
+        // Ver detalhes do leilão
+        window.verDetalhesLeilao = function(leilaoId) {
+            window.open(`detalhes-leilao.html?id=${leilaoId}`, '_blank');
+        };
+        
+        // Mostrar erro
+        function mostrarErro(mensagem) {
+        
+            document.getElementById('listaLeiloes').innerHTML = `
+                <div class="sem-leiloes">
+                    <h3>⚠️ ERRO</h3>
+                    <p>${mensagem}</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Tentar Novamente
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Inicializar quando a página carregar
+        window.onload = carregarLeiloesRealizados;
+    </script>
+</body>
+</html>

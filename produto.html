@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Produto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+    html, body{
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+  color:#333;
+}
+
+/* ===== HEADER ===== */
+.topo{
+  background:#111;
+  border-bottom:2px solid #d4af37;
+}
+.topo-container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+}
+.logo{height:55px}
+
+.menu{
+  margin-left:auto;
+  display:flex;
+  gap:15px;
+}
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:bold;
+}
+.menu a:hover{color:#d4af37}
+
+.menu-btn{
+  display:none;
+  font-size:26px;
+  color:#fff;
+  margin-left:auto;
+  cursor:pointer;
+}
+
+.menu-mobile{
+  display:none;
+  background:#111;
+}
+.menu-mobile a{
+  display:block;
+  padding:12px;
+  color:#fff;
+  text-decoration:none;
+  border-top:1px solid #222;
+}
+.menu-mobile a:hover{
+  background:#1c1c1c;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1200px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+/* ===== PRODUTO ===== */
+.produto{
+  display:flex;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.galeria{flex:1}
+.galeria img{
+  width:100%;
+  border-radius:10px;
+}
+.thumbs{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+.thumbs img{
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.thumbs img.active{border-color:#3483fa}
+
+.info{flex:1.2}
+.info h1{font-size:26px}
+.preco{
+  font-size:32px;
+  color:#27ae60;
+  font-weight:bold;
+}
+.media{margin:10px 0;color:#f39c12}
+.btn-whats{
+  background:#25d366;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  display:block;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+/* ===== BOX ===== */
+.box{
+  background:#fff;
+  margin-top:25px;
+  padding:20px;
+  border-radius:10px;
+}
+.box h2{
+  border-bottom:2px solid #ffc107;
+  display:inline-block;
+  margin-bottom:15px;
+}
+
+/* ===== ESTILOS PARA DESCRIÇÃO FORMATADA ===== */
+#descricao {
+  line-height: 1.6;
+  font-size: 16px;
+  white-space: pre-wrap; /* Mantém quebras de linha e espaços */
+  word-wrap: break-word;
+}
+
+/* Estilos para formatação automática */
+#descricao h1, 
+#descricao h2, 
+#descricao h3,
+#descricao h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+#descricao h1 {
+  font-size: 24px;
+}
+
+#descricao h2 {
+  font-size: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+#descricao h3 {
+  font-size: 18px;
+}
+
+#descricao h4 {
+  font-size: 16px;
+}
+
+#descricao p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+#descricao ul, 
+#descricao ol {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+#descricao li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+#descricao strong, 
+#descricao b {
+  font-weight: bold;
+}
+
+#descricao em, 
+#descricao i {
+  font-style: italic;
+}
+
+#descricao a {
+  color: #3483fa;
+  text-decoration: none;
+}
+
+#descricao a:hover {
+  text-decoration: underline;
+}
+
+#descricao blockquote {
+  border-left: 3px solid #ddd;
+  padding-left: 15px;
+  margin-left: 0;
+  color: #666;
+  font-style: italic;
+}
+
+#descricao pre {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+#descricao code {
+  background: #f5f5f5;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* ===== AVALIAÇÕES ===== */
+.estrelas span{
+  font-size:30px;
+  cursor:pointer;
+  color:#ccc;
+}
+.estrelas span.ativa{color:#f1c40f}
+
+.form-avaliacao {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.btn-avaliacao {
+  margin-top: 10px;
+  padding: 12px 20px;
+  background: #3483fa;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  width: 100%;
+}
+
+.btn-avaliacao:hover {
+  background: #2968c8;
+}
+
+.avaliacao{
+  border-top: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.avaliacao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.avaliacao-autor {
+  font-weight: bold;
+  color: #333;
+  font-size: 16px;
+}
+
+.avaliacao-data {
+  color: #999;
+  font-size: 12px;
+}
+
+.avaliacao-estrelas {
+  color: #f39c12;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin: 5px 0;
+}
+
+.avaliacao-comentario {
+  margin: 10px 0;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .menu{display:none}
+  .menu-btn{display:block}
+  .produto{flex-direction:column}
+  
+  #descricao h1 {
+    font-size: 22px;
+  }
+  
+  #descricao h2 {
+    font-size: 18px;
+  }
+  
+  #descricao h3 {
+    font-size: 16px;
+  }
+  
+  #descricao {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .avaliacao-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .avaliacao-data {
+    margin-top: 5px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topo">
+  <div class="topo-container">
+    <img src="silvv.png" class="logo">
+    <div class="menu">
+      <a href="mercado.html">Mercado</a>
+      <a href="leilao.html">Leilão</a>
+      <a href="venda-para-nos.html">Venda para nós</a>
+    </div>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="menu-mobile" id="menuMobile">
+    <a href="mercado.html">Mercado</a>
+    <a href="leilao.html">Leilão</a>
+    <a href="venda-para-nos.html">Venda para nós</a>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="produto">
+  <div class="galeria">
+    <img id="imgPrincipal">
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+
+  <div class="info">
+    <h1 id="nome"></h1>
+    <div class="preco" id="preco"></div>
+    <div class="media" id="media"></div>
+    <a id="btnWhats" class="btn-whats" target="_blank">Comprar no WhatsApp</a>
+  </div>
+</div>
+
+<div class="box">
+  <h2>Descrição</h2>
+  <div id="descricao"></div>
+</div>
+
+<div class="box">
+  <h2>Avaliações</h2>
+
+  <div class="estrelas" id="estrelas">
+    <span title="1 estrela">★</span>
+    <span title="2 estrelas">★</span>
+    <span title="3 estrelas">★</span>
+    <span title="4 estrelas">★</span>
+    <span title="5 estrelas">★</span>
+  </div>
+
+  <div class="form-avaliacao">
+    <div class="form-group">
+      <label for="nomeAvaliador">Seu nome:</label>
+      <input type="text" id="nomeAvaliador" class="form-control" placeholder="Digite seu nome" maxlength="50">
+    </div>
+    
+    <div class="form-group">
+      <label for="comentario">Sua avaliação:</label>
+      <textarea id="comentario" class="form-control" placeholder="Compartilhe sua experiência com o produto..."></textarea>
+    </div>
+    
+    <button class="btn-avaliacao" onclick="enviarAvaliacao()">Enviar avaliação</button>
+  </div>
+
+  <div id="listaAvaliacoes"></div>
+</div>
+
+</div>
+
+<script type="module">
+
+import { db } from "./firebase.js";
+import { doc, getDoc, collection, addDoc, onSnapshot, serverTimestamp }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// FUNÇÃO PARA FORMATAR MOEDA BRASILEIRA
+function formatarMoedaBrasileira(valor) {
+  const numero = parseFloat(valor) || 0;
+  return numero.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+window.toggleMenu = ()=>{
+  const m=document.getElementById("menuMobile");
+  m.style.display = m.style.display==="block"?"none":"block";
+};
+
+// Função para converter texto simples em HTML formatado
+function formatarDescricao(texto) {
+  if (!texto) return "";
+  
+  // Se já contém tags HTML, retornar como está
+  if (/<[a-z][\s\S]*>/i.test(texto)) {
+    return texto;
+  }
+  
+  // Processar o texto para manter formatação
+  let html = texto;
+  
+  // Converter quebras de linha em <br> ou <p>
+  html = html.replace(/\n\s*\n/g, '</p><p>'); // Duas quebras de linha = novo parágrafo
+  html = html.replace(/\n/g, '<br>'); // Uma quebra de linha = <br>
+  
+  // Adicionar tags de parágrafo se não tiver
+  if (!html.startsWith('<p>') && !html.includes('</p>')) {
+    html = '<p>' + html + '</p>';
+  }
+  
+  // Converter markdown básico
+  html = html.replace(/### (.*?)(<br>|$)/g, '<h3>$1</h3>');
+  html = html.replace(/## (.*?)(<br>|$)/g, '<h2>$1</h2>');
+  html = html.replace(/# (.*?)(<br>|$)/g, '<h1>$1</h1>');
+  
+  // Converter listas
+  html = html.replace(/^- (.*?)(<br>|$)/g, '<li>$1</li>');
+  html = html.replace(/<li>(.*?)<\/li>/g, function(match, p1) {
+    return '<ul><li>' + p1 + '</li></ul>';
+  });
+  
+  // Converter negrito e itálico básico
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  return html;
+}
+
+const id=new URLSearchParams(location.search).get("id");
+const prodRef=doc(db,"produtos",id);
+const snap=await getDoc(prodRef);
+const p=snap.data();
+
+nome.textContent=p.nome;
+// CORREÇÃO AQUI: Usar a função formatarMoedaBrasileira
+preco.textContent=formatarMoedaBrasileira(p.preco);
+
+// Processar descrição
+const descricaoElement = document.getElementById('descricao');
+if (p.descricao) {
+  descricaoElement.innerHTML = formatarDescricao(p.descricao);
+} else {
+  descricaoElement.textContent = "Sem descrição disponível";
+}
+
+btnWhats.href=`https://wa.me/5521971258860?text=${encodeURIComponent(
+  "Olá! Tenho interesse no produto: "+p.nome
+)}`;
+
+const imgs=p.imagens?.length?p.imagens:[p.imagem];
+imgPrincipal.src=imgs[0];
+
+imgs.forEach((url,i)=>{
+  const img=document.createElement("img");
+  img.src=url;
+  if(i===0) img.classList.add("active");
+  img.onclick=()=>{
+    imgPrincipal.src=url;
+    document.querySelectorAll(".thumbs img")
+      .forEach(t=>t.classList.remove("active"));
+    img.classList.add("active");
+  };
+  thumbs.appendChild(img);
+});
+
+let nota=0;
+document.querySelectorAll(".estrelas span").forEach((s,i)=>{
+  s.onclick=()=>{
+    nota=i+1;
+    document.querySelectorAll(".estrelas span")
+      .forEach((e,idx)=>e.classList.toggle("ativa",idx<nota));
+  };
+});
+
+const avalRef=collection(db,"produtos",id,"avaliacoes");
+
+onSnapshot(avalRef,s=>{
+  let total=0,q=0;
+  listaAvaliacoes.innerHTML="";
+  s.forEach(d=>{
+    const a=d.data();
+    total+=a.nota;q++;
+    
+    // Formatar data
+    const dataFormatada = a.data?.toDate ? 
+      a.data.toDate().toLocaleDateString('pt-BR') : 
+      'Data não disponível';
+    
+    // Estrelas
+    const estrelas = '★'.repeat(a.nota || 0) + '☆'.repeat(5 - (a.nota || 0));
+    
+    listaAvaliacoes.innerHTML+=`
+      <div class="avaliacao">
+        <div class="avaliacao-header">
+          <div class="avaliacao-autor">${a.nome || 'Anônimo'}</div>
+          <div class="avaliacao-data">${dataFormatada}</div>
+        </div>
+        <div class="avaliacao-estrelas">${estrelas}</div>
+        <div class="avaliacao-comentario">${a.comentario || ''}</div>
+      </div>`;
+  });
+  media.textContent=q?`⭐ ${(total/q).toFixed(1)} / 5 (${q} avaliações)`:"Sem avaliações";
+});
+
+window.enviarAvaliacao=async ()=>{
+  if(!nota) return alert("Selecione a nota com as estrelas");
+  
+  const nomeAvaliador = document.getElementById('nomeAvaliador').value.trim();
+  const comentarioTexto = document.getElementById('comentario').value.trim();
+  
+  if(!nomeAvaliador) return alert("Digite seu nome");
+  if(!comentarioTexto) return alert("Escreva um comentário");
+
+  await addDoc(avalRef,{
+    nota,
+    nome: nomeAvaliador,
+    comentario: comentarioTexto,
+    data: serverTimestamp()
+  });
+
+  // Limpar formulário
+  document.getElementById('nomeAvaliador').value = "";
+  document.getElementById('comentario').value = "";
+  nota=0;
+  document.querySelectorAll(".estrelas span")
+    .forEach(s=>s.classList.remove("ativa"));
+};
+
+
+</script>
+
+</body>
+</html>

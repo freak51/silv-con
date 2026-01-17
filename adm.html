@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel ADM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f4f4;
+  margin:0;
+  padding:20px;
+}
+h1,h2{margin-top:0}
+section{
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  margin-bottom:30px;
+}
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+}
+button{
+  padding:10px 15px;
+  cursor:pointer;
+  border:none;
+  border-radius:5px;
+  background:#3483fa;
+  color:#fff;
+}
+.card{
+  border:1px solid #ddd;
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
+}
+.btn-del{
+  background:#e74c3c;
+  margin-left:5px;
+}
+.btn-edit{
+  background:#f1c40f;
+  color:#000;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔐 Painel Administrativo</h1>
+
+<!-- PRODUTOS -->
+<section>
+  <h2>📦 Produtos</h2>
+
+  <input id="pNome" placeholder="Nome do produto">
+  <input id="pPreco" type="number" placeholder="Preço">
+  <textarea id="pDesc" placeholder="Descrição"></textarea>
+  <input id="pImg" placeholder="URL da imagem (https://...)">
+
+
+
+  <button onclick="addProduto()">Salvar Produto</button>
+
+  <div id="listaProdutos"></div>
+</section>
+
+<!-- LEILÕES -->
+<section>
+  <h2>🔨 Leilões</h2>
+
+  <input id="lNome" placeholder="Nome do leilão">
+  <input id="lLance" type="number" placeholder="Lance inicial">
+  <textarea id="lDesc" placeholder="Descrição"></textarea>
+
+  <button onclick="addLeilao()">Salvar Leilão</button>
+
+  <div id="listaLeiloes"></div>
+</section>
+
+<script type="module">
+import { db } from "./firebase.js";
+import {
+  collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* ================= PRODUTOS ================= */
+const prodRef = collection(db, "produtos");
+const listaProdutos = document.getElementById("listaProdutos");
+
+let produtoEditando = null;
+
+window.addProduto = async function(){
+  if(produtoEditando){
+    await updateDoc(doc(db,"produtos",produtoEditando),{
+      nome: pNome.value,
+      preco: Number(pPreco.value),
+      descricao: pDesc.value,
+      imagem: pImg.value
+    });
+    produtoEditando = null;
+  } else {
+    await addDoc(prodRef,{
+      nome: pNome.value,
+      preco: Number(pPreco.value),
+      descricao: pDesc.value,
+      imagem: pImg.value
+    });
+  }
+
+  pNome.value = pPreco.value = pDesc.value = pImg.value = "";
+};
+
+onSnapshot(prodRef, snap=>{
+  listaProdutos.innerHTML = "";
+  snap.forEach(d=>{
+    const p = d.data();
+    listaProdutos.innerHTML += `
+      <div class="card">
+        <strong>${p.nome}</strong> — R$ ${p.preco}
+        <br>
+        <button class="btn-edit"
+          onclick="editarProduto('${d.id}','${p.nome}','${p.preco}','${p.descricao}','${p.imagem}')">
+          Editar
+        </button>
+        <button class="btn-del" onclick="delProduto('${d.id}')">Excluir</button>
+      </div>
+    `;
+  });
+});
+
+window.editarProduto = function(id,nome,preco,desc,img){
+  produtoEditando = id;
+  pNome.value = nome;
+  pPreco.value = preco;
+  pDesc.value = desc;
+  pImg.value = img;
+};
+
+window.delProduto = async function(id){
+  await deleteDoc(doc(db,"produtos",id));
+};
+
+/* ================= LEILÕES ================= */
+const leilaoRef = collection(db, "leiloes");
+const listaLeiloes = document.getElementById("listaLeiloes");
+
+let leilaoEditando = null;
+
+window.addLeilao = async function(){
+  if(leilaoEditando){
+    await updateDoc(doc(db,"leiloes",leilaoEditando),{
+      nome: lNome.value,
+      lanceInicial: Number(lLance.value),
+      descricao: lDesc.value
+    });
+    leilaoEditando = null;
+  } else {
+    await addDoc(leilaoRef,{
+      nome: lNome.value,
+      lanceInicial: Number(lLance.value),
+      descricao: lDesc.value,
+      ativo: true
+    });
+  }
+
+  lNome.value = lLance.value = lDesc.value = "";
+};
+
+onSnapshot(leilaoRef, snap=>{
+  listaLeiloes.innerHTML = "";
+  snap.forEach(d=>{
+    const l = d.data();
+    listaLeiloes.innerHTML += `
+      <div class="card">
+        <strong>${l.nome}</strong> — R$ ${l.lanceInicial}
+        <br>
+        <button class="btn-edit"
+          onclick="editarLeilao('${d.id}','${l.nome}','${l.lanceInicial}','${l.descricao}')">
+          Editar
+        </button>
+        <button class="btn-del" onclick="delLeilao('${d.id}')">Excluir</button>
+      </div>
+    `;
+  });
+});
+
+window.editarLeilao = function(id,nome,lance,desc){
+  leilaoEditando = id;
+  lNome.value = nome;
+  lLance.value = lance;
+  lDesc.value = desc;
+};
+
+window.delLeilao = async function(id){
+  await deleteDoc(doc(db,"leiloes",id));
+};
+</script>
+
+</body>
+</html>

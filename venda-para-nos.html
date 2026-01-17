@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Venda para nós</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html, body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+}
+
+/* ===== HEADER ===== */
+.topo{
+  background:#111;
+  border-bottom:2px solid #d4af37;
+  width:100%;
+}
+
+.topo-container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+}
+
+.logo{
+  height:55px;
+}
+
+/* MENU DESKTOP */
+.menu{
+  margin-left:auto;
+  display:flex;
+  gap:18px;
+}
+
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:bold;
+  transition:.3s;
+}
+
+.menu a:hover{
+  color:#d4af37;
+}
+
+/* BOTÃO HAMBÚRGUER */
+.menu-btn{
+  display:none;
+  margin-left:auto;
+  font-size:26px;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* MENU MOBILE */
+.menu-mobile{
+  display:none;
+  flex-direction:column;
+  background:#111;
+  border-top:1px solid #333;
+}
+
+.menu-mobile a{
+  padding:15px;
+  color:#fff;
+  text-decoration:none;
+  border-bottom:1px solid #222;
+  font-weight:bold;
+}
+
+.menu-mobile a:hover{
+  background:#1c1c1c;
+  color:#d4af37;
+}
+
+/* ===== CONTEÚDO ===== */
+.venda-container{
+  max-width:900px;
+  margin:40px auto;
+  padding:0 15px;
+}
+
+.venda-container h1{
+  margin-bottom:10px;
+}
+
+.descricao{
+  margin-bottom:30px;
+  color:#555;
+}
+
+.como-funciona{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:30px;
+}
+
+.como-funciona ul{
+  margin-top:10px;
+  padding-left:20px;
+}
+
+.como-funciona li{
+  margin-bottom:8px;
+}
+
+/* FORMULÁRIO */
+.form-venda{
+  background:#fff;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.form-venda h2{
+  margin-bottom:20px;
+}
+
+.campo{
+  margin-bottom:15px;
+}
+
+.campo label{
+  display:block;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
+.campo input,
+.campo textarea{
+  width:100%;
+  padding:10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+
+.campo textarea{
+  resize:vertical;
+  min-height:100px;
+}
+
+.form-venda button{
+  width:100%;
+  padding:14px;
+  background:#25D366;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:bold;
+  color:#fff;
+  cursor:pointer;
+}
+
+.form-venda button:hover{
+  background:#1ebe5d;
+}
+
+/* ===== RESPONSIVO ===== */
+@media(max-width:768px){
+  .menu{
+    display:none;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .menu-mobile.ativo{
+    display:flex;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topo">
+  <div class="topo-container">
+    <img src="silvv.png" class="logo">
+
+    <div class="menu">
+      <a href="mercado.html">Mercado</a>
+      <a href="leilao.html">Leilão</a>
+      <a href="venda-para-nos.html">Venda para nós</a>
+    </div>
+
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="menu-mobile" id="menuMobile">
+    <a href="mercado.html">Mercado</a>
+    <a href="leilao.html">Leilão</a>
+    <a href="venda-para-nos.html">Venda para nós</a>
+  </div>
+</header>
+
+<section class="venda-container">
+  <h1>Venda pra nós</h1>
+  <p class="descricao">
+    Tem um item e quer vender de forma rápida e segura?
+    Avaliamos seu produto e fazemos uma proposta justa.
+  </p>
+
+  <div class="como-funciona">
+    <h2>Como funciona</h2>
+    <ul>
+      <li>📦 Envie as informações do item</li>
+      <li>💰 Avaliamos e negociamos o valor</li>
+      <li>🤝 Fechando acordo, realizamos a compra</li>
+    </ul>
+  </div>
+
+  <form class="form-venda" id="formVenda">
+    <h2>Envie seu item</h2>
+
+    <div class="campo">
+      <label>Nome do item</label>
+      <input type="text" name="item" required>
+    </div>
+
+    <div class="campo">
+      <label>Descrição</label>
+      <textarea name="descricao" required></textarea>
+    </div>
+
+    <div class="campo">
+      <label>Preço desejado (R$)</label>
+      <input type="number" name="preco" required>
+    </div>
+
+    <div class="campo">
+      <label>Contato</label>
+      <input type="text" name="contato" required>
+    </div>
+
+    <button type="submit">Enviar para análise</button>
+  </form>
+</section>
+
+<!-- MENU MOBILE -->
+<script>
+function toggleMenu(){
+  document.getElementById("menuMobile").classList.toggle("ativo");
+}
+</script>
+
+<!-- FORMULÁRIO -->
+<script>
+document.getElementById('formVenda').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const item = this.item.value;
+  const descricao = this.descricao.value;
+  const preco = this.preco.value;
+  const contato = this.contato.value;
+
+  const mensagem =
+`Olá! Gostaria de vender um item:
+
+📦 Item: ${item}
+📝 Descrição: ${descricao}
+💰 Preço desejado: R$ ${preco}
+📞 Contato: ${contato}
+
+📸 Envie as fotos do item por aqui 👇`;
+
+  const telefone = '5521971258860';
+  const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(url, '_blank');
+});
+</script>
+
+</body>
+</html>

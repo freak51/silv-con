@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Leilões</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html, body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#ebebeb;
+}
+
+/* ===== HEADER ===== */
+.topo{
+  background:#111;
+  border-bottom:2px solid #d4af37;
+  width:100%;
+}
+
+.topo-container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+}
+
+.logo{
+  height:55px;
+}
+
+/* ===== MENU DESKTOP ===== */
+.menu{
+  margin-left:auto;
+  display:flex;
+  gap:18px;
+}
+
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.menu a:hover{
+  color:#d4af37;
+}
+
+/* ===== BOTÃO HAMBÚRGUER ===== */
+.menu-btn{
+  display:none;
+  margin-left:auto;
+  font-size:26px;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* ===== MENU MOBILE ===== */
+.menu-mobile{
+  display:none;
+  flex-direction:column;
+  background:#111;
+  border-top:1px solid #333;
+}
+
+.menu-mobile a{
+  padding:15px;
+  color:#fff;
+  text-decoration:none;
+  border-bottom:1px solid #222;
+  font-weight:bold;
+}
+
+.menu-mobile a:hover{
+  background:#1c1c1c;
+  color:#d4af37;
+}
+
+/* ===== FILTROS ===== */
+.filtros-container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.filtros {
+  display: flex;
+  gap: 15px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filtro-btn:hover {
+  background: #e9ecef;
+}
+
+.filtro-btn.ativo {
+  background: #d4af37;
+  color: #000;
+  border-color: #d4af37;
+}
+
+/* ===== LEILÕES ===== */
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 15px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:25px;
+}
+
+.leilao-card{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1);
+  transition:transform 0.3s, box-shadow 0.3s;
+}
+
+.leilao-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.leilao-imagem{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+
+.leilao-conteudo{
+  padding:20px;
+}
+
+.leilao-titulo{
+  font-size:1.4rem;
+  margin-bottom:10px;
+  color:#333;
+  font-weight:bold;
+}
+
+.leilao-info{
+  margin-bottom:15px;
+}
+
+.leilao-valor{
+  color:#e74c3c;
+  font-size:1.5rem;
+  font-weight:bold;
+  margin:10px 0;
+}
+
+.leilao-detalhes{
+  color:#666;
+  font-size:0.9rem;
+  margin-bottom:8px;
+}
+
+.leilao-detalhes strong{
+  color:#333;
+}
+
+.leilao-tempo{
+  background:#f8f9fa;
+  padding:8px 12px;
+  border-radius:6px;
+  margin:15px 0;
+  font-size:0.9rem;
+  font-weight:bold;
+}
+
+.embreve-tempo {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.ativo-tempo {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.finalizado-tempo {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.leilao-btn{
+  display:block;
+  width:100%;
+  background:#d4af37;
+  color:#000;
+  text-align:center;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:1.1rem;
+  transition:background 0.3s;
+  border:none;
+  cursor:pointer;
+}
+
+.leilao-btn:hover{
+  background:#c19b2e;
+  color:#000;
+}
+
+/* ===== STATUS BADGE ===== */
+.status-badge{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:0.8rem;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.status-ativo{
+  background:#2ecc71;
+  color:white;
+}
+
+.status-finalizado{
+  background:#e74c3c;
+  color:white;
+}
+
+.status-em-breve{
+  background:#3498db;
+  color:white;
+}
+
+/* ===== SEÇÃO DE STATUS ===== */
+.secao-status {
+  grid-column: 1 / -1;
+  margin-bottom: 20px;
+}
+
+.secao-titulo {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #d4af37;
+}
+
+/* ===== SEM LEILÕES ===== */
+.sem-leiloes{
+  text-align:center;
+  padding:50px 20px;
+  grid-column:1/-1;
+}
+
+.sem-leiloes h2{
+  color:#666;
+  margin-bottom:15px;
+}
+
+/* ===== LEILÕES A EXCLUIR (INDICADOR) ===== */
+.leilao-exclusao {
+  position: relative;
+}
+
+.leilao-exclusao::after {
+  content: "🗑️ Excluir em breve";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(231, 76, 60, 0.9);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  z-index: 10;
+}
+
+/* ===== RESPONSIVO ===== */
+@media(max-width:768px){
+  .menu{
+    display:none;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .menu-mobile.ativo{
+    display:flex;
+  }
+
+  .container{
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
+  }
+
+  .filtros {
+    flex-direction: column;
+  }
+
+  .filtro-btn {
+    width: 100%;
+  }
+}
+
+@media(max-width:480px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
+
+.menu-mobile{
+  display:none;
+  background:#111;
+}
+.menu-mobile a{
+  display:block;
+  padding:12px;
+  color:#fff;
+  text-decoration:none;
+  border-top:1px solid #222;
+}
+.menu-mobile a:hover{
+  background:#1c1c1c;
+}
+</style>
+</head>
+
+<body>
+
+<header class="topo">
+  <div class="topo-container">
+    <img src="silvv.png" class="logo">
+    <div class="menu">
+      <a href="mercado.html">Mercado</a>
+      <a href="leilao.html">Leilão</a>
+      <a href="venda-para-nos.html">Venda para nós</a>
+    </div>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="menu-mobile" id="menuMobile">
+    <a href="mercado.html">Mercado</a>
+    <a href="leilao.html">Leilão</a>
+    <a href="venda-para-nos.html">Venda para nós</a>
+  </div>
+</header>
+
+<!-- FILTROS -->
+<div class="filtros-container">
+  <div class="filtros">
+    <button class="filtro-btn ativo" onclick="filtrarLeiloes('todos')">Todos</button>
+    <button class="filtro-btn" onclick="filtrarLeiloes('ativo')">Ativos</button>
+    <button class="filtro-btn" onclick="filtrarLeiloes('em-breve')">Em Breve</button>
+    <button class="filtro-btn" onclick="filtrarLeiloes('finalizado')">Finalizados</button>
+  </div>
+</div>
+
+<!-- LISTA DE LEILÕES -->
+<div class="container" id="listaLeiloes">
+  <!-- Os leilões serão carregados aqui via JavaScript -->
+</div>
+
+<!-- ===== SCRIPT FIREBASE ===== -->
+<script type="module">
+
+  window.toggleMenu = ()=>{
+    const m = document.getElementById("menuMobile");
+    m.style.display = m.style.display === "block" ? "none" : "block";
+  };
+  
+  import { db } from "./firebase.js";
+  import { 
+    collection, 
+    query, 
+    orderBy,
+    onSnapshot,
+    deleteDoc,
+    doc,
+    updateDoc,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // FUNÇÃO PARA FORMATAR MOEDA NO PADRÃO BRASILEIRO
+  window.formatarMoedaBrasileira = function(valor) {
+    const numero = parseFloat(valor) || 0;
+    return numero.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para converter data do Firestore
+  function converterDataFirestore(dataFirestore) {
+    if (!dataFirestore) return null;
+    
+    try {
+      if (dataFirestore.toDate) {
+        return dataFirestore.toDate();
+      } else if (dataFirestore instanceof Date) {
+        return dataFirestore;
+      } else if (typeof dataFirestore === 'string') {
+        return new Date(dataFirestore);
+      } else if (dataFirestore.seconds) {
+        return new Date(dataFirestore.seconds * 1000);
+      }
+      return null;
+    } catch (error) {
+      console.error("Erro ao converter data:", error);
+      return null;
+    }
+  }
+
+  // Função para formatar data para exibição
+  function formatarData(dataFirestore) {
+    const data = converterDataFirestore(dataFirestore);
+    if (!data) return "Data não definida";
+    
+    return data.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  // Função para calcular status do leilão
+  function calcularStatusLeilao(inicio, fim) {
+    const agora = new Date();
+    const dataInicio = converterDataFirestore(inicio);
+    const dataFim = converterDataFirestore(fim);
+    
+    if (!dataInicio || !dataFim) return 'finalizado';
+    
+    if (agora < dataInicio) {
+      return 'em-breve';
+    } else if (agora >= dataInicio && agora <= dataFim) {
+      return 'ativo';
+    } else {
+      return 'finalizado';
+    }
+  }
+
+  // Função para calcular há quanto tempo foi finalizado (em horas)
+  function calcularHorasDesdeFinalizacao(fim) {
+    const agora = new Date();
+    const dataFim = converterDataFirestore(fim);
+    
+    if (!dataFim) return 0;
+    
+    const diferencaMs = agora - dataFim;
+    const horas = diferencaMs / (1000 * 60 * 60);
+    
+    return horas;
+  }
+
+  // Função para verificar e excluir leilões antigos
+  async function verificarExcluirLeiloesAntigos() {
+    try {
+      console.log("🔄 Verificando leilões para exclusão...");
+      const leiloesRef = collection(db, "leiloes");
+      const snapshot = await getDocs(leiloesRef);
+      
+      let excluidos = 0;
+      
+      for (const docItem of snapshot.docs) {
+        const leilao = docItem.data();
+        const leilaoId = docItem.id;
+        
+        // Verificar se o leilão está finalizado
+        const status = calcularStatusLeilao(leilao.inicio, leilao.fim);
+        
+        if (status === 'finalizado') {
+          const horasDesdeFinalizacao = calcularHorasDesdeFinalizacao(leilao.fim);
+          
+          // Verificar se já passaram 24 horas
+          if (horasDesdeFinalizacao >= 24) {
+            console.log(`🗑️ Excluindo leilão ${leilaoId} (finalizado há ${horasDesdeFinalizacao.toFixed(1)} horas)`);
+            
+            try {
+              // Excluir o leilão
+              await deleteDoc(doc(db, "leiloes", leilaoId));
+              
+              // Excluir também os lances (subcoleção)
+              try {
+                const lancesRef = collection(db, "leiloes", leilaoId, "lances");
+                const lancesSnapshot = await getDocs(lancesRef);
+                
+                for (const lanceDoc of lancesSnapshot.docs) {
+                  await deleteDoc(doc(db, "leiloes", leilaoId, "lances", lanceDoc.id));
+                }
+                console.log(`  ✅ Lances do leilão ${leilaoId} excluídos`);
+              } catch (error) {
+                console.log(`  ⚠️ Não foi possível excluir lances do leilão ${leilaoId}:`, error.message);
+              }
+              
+              excluidos++;
+            } catch (error) {
+              console.error(`❌ Erro ao excluir leilão ${leilaoId}:`, error);
+            }
+          }
+        }
+      }
+      
+      if (excluidos > 0) {
+        console.log(`✅ ${excluidos} leilão(ões) excluído(s) por estarem finalizados há mais de 24 horas`);
+      } else {
+        console.log("✅ Nenhum leilão para excluir");
+      }
+      
+    } catch (error) {
+      console.error("❌ Erro ao verificar leilões para exclusão:", error);
+    }
+  }
+
+  // Função para calcular tempo restante
+  function calcularTempoRestante(inicio, fim) {
+    const agora = new Date();
+    const dataInicio = converterDataFirestore(inicio);
+    const dataFim = converterDataFirestore(fim);
+    const status = calcularStatusLeilao(inicio, fim);
+    
+    if (!dataInicio || !dataFim) return { texto: 'Tempo indefinido', classe: '' };
+    
+    if (status === 'em-breve') {
+      // Calcular tempo até o início
+      const diffMs = dataInicio - agora;
+      if (diffMs <= 0) return { texto: 'Iniciando agora', classe: 'embreve-tempo' };
+      
+      return calcularTempoParaData(dataInicio, 'embreve-tempo', 'Inicia em:');
+      
+    } else if (status === 'ativo') {
+      // Calcular tempo até o fim
+      const diffMs = dataFim - agora;
+      if (diffMs <= 0) return { texto: 'Finalizando agora', classe: 'ativo-tempo' };
+      
+      return calcularTempoParaData(dataFim, 'ativo-tempo', 'Termina em:');
+      
+    } else {
+      // Leilão finalizado - mostrar há quanto tempo
+      const horasDesdeFinalizacao = calcularHorasDesdeFinalizacao(fim);
+      let texto = '⏰ FINALIZADO';
+      
+      if (horasDesdeFinalizacao > 0) {
+        if (horasDesdeFinalizacao >= 24) {
+          texto = `🗑️ Excluir em breve`;
+        } else {
+          const horasRestantes = 24 - horasDesdeFinalizacao;
+          texto = `🗑️ Exclui em ${Math.floor(horasRestantes)}h`;
+        }
+      }
+      
+      return { texto, classe: 'finalizado-tempo' };
+    }
+  }
+
+  // Função auxiliar para calcular tempo para uma data específica
+  function calcularTempoParaData(dataAlvo, classe, prefixo) {
+    const agora = new Date();
+    const diffMs = dataAlvo - agora;
+    
+    const dias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    let texto = '';
+    if (dias > 0) {
+      texto = `${prefixo} ${dias}d ${horas}h`;
+    } else if (horas > 0) {
+      texto = `${prefixo} ${horas}h ${minutos}min`;
+    } else {
+      texto = `${prefixo} ${minutos}min`;
+    }
+    
+    return { texto, classe };
+  }
+
+  // Variáveis globais
+  let todosLeiloes = [];
+  let filtroAtual = 'todos';
+
+  // Função para filtrar leilões
+  window.filtrarLeiloes = function(status) {
+    filtroAtual = status;
+    
+    // Atualizar botões ativos
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+      btn.classList.remove('ativo');
+    });
+    event.target.classList.add('ativo');
+    
+    // Filtrar e exibir leilões
+    exibirLeiloesFiltrados();
+  };
+
+  // Função para exibir leilões filtrados
+  function exibirLeiloesFiltrados() {
+    const listaDiv = document.getElementById('listaLeiloes');
+    
+    // Filtrar leilões
+    let leiloesFiltrados = [];
+    
+    if (filtroAtual === 'todos') {
+      leiloesFiltrados = [...todosLeiloes];
+    } else {
+      leiloesFiltrados = todosLeiloes.filter(leilao => {
+        const status = calcularStatusLeilao(leilao.data.inicio, leilao.data.fim);
+        return status === filtroAtual;
+      });
+    }
+    
+    if (leiloesFiltrados.length === 0) {
+      let mensagem = '';
+      switch(filtroAtual) {
+        case 'ativo':
+          mensagem = 'Nenhum leilão ativo no momento';
+          break;
+        case 'em-breve':
+          mensagem = 'Nenhum leilão em breve';
+          break;
+        case 'finalizado':
+          mensagem = 'Nenhum leilão finalizado';
+          break;
+        default:
+          mensagem = 'Nenhum leilão disponível';
+      }
+      
+      listaDiv.innerHTML = `
+        <div class="sem-leiloes">
+          <h2>📭 ${mensagem}</h2>
+          <p>Volte em breve para conferir novas oportunidades!</p>
+          ${filtroAtual !== 'todos' ? 
+            `<button onclick="filtrarLeiloes('todos')" style="margin-top: 15px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              Ver todos os leilões
+            </button>` : ''
+          }
+        </div>
+      `;
+      return;
+    }
+    
+    // Agrupar leilões por status
+    const leiloesAgrupados = {
+      'ativo': [],
+      'em-breve': [],
+      'finalizado': []
+    };
+    
+    leiloesFiltrados.forEach(leilao => {
+      const status = calcularStatusLeilao(leilao.data.inicio, leilao.data.fim);
+      leiloesAgrupados[status].push(leilao);
+    });
+    
+    // Ordenar leilões dentro de cada grupo
+    Object.keys(leiloesAgrupados).forEach(status => {
+      leiloesAgrupados[status].sort((a, b) => {
+        const dataA = converterDataFirestore(a.data.inicio);
+        const dataB = converterDataFirestore(b.data.inicio);
+        return dataA - dataB;
+      });
+    });
+    
+    // Construir HTML
+    let html = '';
+    
+    // Se não for filtro "todos", mostrar todos juntos
+    if (filtroAtual !== 'todos') {
+      leiloesAgrupados[filtroAtual].forEach(leilao => {
+        html += criarCardLeilao(leilao);
+      });
+    } else {
+      // Se for "todos", agrupar por seções
+      ['ativo', 'em-breve', 'finalizado'].forEach(status => {
+        if (leiloesAgrupados[status].length > 0) {
+          let tituloSecao = '';
+          switch(status) {
+            case 'ativo':
+              tituloSecao = '🏆 Leilões Ativos';
+              break;
+            case 'em-breve':
+              tituloSecao = '⏰ Leilões em Breve';
+              break;
+            case 'finalizado':
+              tituloSecao = '📜 Leilões Finalizados';
+              break;
+          }
+          
+          html += `<div class="secao-status"><h2 class="secao-titulo">${tituloSecao}</h2></div>`;
+          
+          leiloesAgrupados[status].forEach(leilao => {
+            html += criarCardLeilao(leilao);
+          });
+        }
+      });
+    }
+    
+    listaDiv.innerHTML = html;
+  }
+
+  // Função para criar card de leilão
+  function criarCardLeilao(leilaoObj) {
+    const leilao = leilaoObj.data;
+    const leilaoId = leilaoObj.id;
+    
+    const status = calcularStatusLeilao(leilao.inicio, leilao.fim);
+    const statusTexto = {
+      'ativo': 'ATIVO',
+      'em-breve': 'EM BREVE',
+      'finalizado': 'FINALIZADO'
+    }[status] || 'DESCONHECIDO';
+    
+    const statusClass = {
+      'ativo': 'status-ativo',
+      'em-breve': 'status-em-breve',
+      'finalizado': 'status-finalizado'
+    }[status] || '';
+    
+    // Calcular horas desde a finalização
+    const horasDesdeFinalizacao = calcularHorasDesdeFinalizacao(leilao.fim);
+    const deveExcluir = status === 'finalizado' && horasDesdeFinalizacao >= 24;
+    
+    // Formatar valores monetários
+    const valorAtual = leilao.maiorLance || leilao.valorInicial || 0;
+    const lanceMinimo = leilao.lanceMinimo || 1;
+    
+    // Tratar imagem
+    let imagemSrc = leilao.imagem || "https://via.placeholder.com/300x200/CCCCCC/666666?text=Sem+Imagem";
+    if (imagemSrc.startsWith('data:image')) {
+      // Já está em formato base64
+    } else if (!imagemSrc.startsWith('http')) {
+      imagemSrc = "https://via.placeholder.com/300x200/CCCCCC/666666?text=Leilão";
+    }
+    
+    // Calcular tempo restante
+    const tempo = calcularTempoRestante(leilao.inicio, leilao.fim);
+    
+    // Definir texto do botão
+    let textoBotao = '';
+    let acaoBotao = `verLeilao('${leilaoId}')`;
+    
+    switch(status) {
+      case 'ativo':
+        textoBotao = '🏆 PARTICIPAR DO LEILÃO';
+        break;
+      case 'em-breve':
+        textoBotao = '🔔 DETALHES DO LEILÃO';
+        break;
+      case 'finalizado':
+        if (deveExcluir) {
+          textoBotao = '🗑️ EXCLUINDO EM BREVE';
+        } else {
+          textoBotao = '📜 VER RESULTADO';
+        }
+        break;
+      default:
+        textoBotao = '👁️ VER DETALHES';
+    }
+    
+    // Adicionar classe de exclusão se necessário
+    const classeExclusao = deveExcluir ? 'leilao-exclusao' : '';
+    
+    return `
+      <div class="leilao-card ${classeExclusao}">
+        <img src="${imagemSrc}" alt="${leilao.titulo || 'Leilão'}" class="leilao-imagem" onerror="this.src='https://via.placeholder.com/300x200/CCCCCC/666666?text=Imagem+Indisponível'">
+        
+        <div class="leilao-conteudo">
+          <div class="status-badge ${statusClass}">${statusTexto}</div>
+          
+          <h3 class="leilao-titulo">${leilao.titulo || 'Leilão sem título'}</h3>
+          
+          <div class="leilao-valor">${window.formatarMoedaBrasileira(valorAtual)}</div>
+          
+          <div class="leilao-detalhes">
+            <strong>🔨 Lance mínimo:</strong> ${window.formatarMoedaBrasileira(lanceMinimo)}
+          </div>
+          
+          <div class="leilao-detalhes">
+            <strong>📅 Início:</strong> ${formatarData(leilao.inicio)}
+          </div>
+          
+          <div class="leilao-detalhes">
+            <strong>⏰ Término:</strong> ${formatarData(leilao.fim)}
+          </div>
+          
+          ${tempo.texto ? `
+            <div class="leilao-tempo ${tempo.classe}">
+              ⏳ ${tempo.texto}
+            </div>
+          ` : ''}
+          
+          <button class="leilao-btn" onclick="${acaoBotao}" ${deveExcluir ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : ''}>
+            ${textoBotao}
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Função para ver detalhes do leilão
+  window.verLeilao = function(leilaoId) {
+    console.log("Abrindo leilão:", leilaoId);
+    // Use um nome de arquivo DIFERENTE para evitar cache
+    window.location.href = `leilao-detalhes.html?id=${leilaoId}&t=${Date.now()}`;
+  };
+
+  // Função para carregar leilões
+  function carregarLeiloes() {
+    const listaDiv = document.getElementById('listaLeiloes');
+    
+    try {
+      console.log("📡 Buscando leilões...");
+      
+      // Referência à coleção de leilões
+      const leiloesRef = collection(db, "leiloes");
+      
+      // Ordenar por data de criação (mais recentes primeiro)
+      const q = query(leiloesRef, orderBy("criadoEm", "desc"));
+      
+      // Escutar mudanças em tempo real
+      onSnapshot(q, (snapshot) => {
+        console.log(`✅ ${snapshot.size} leilão(ões) encontrado(s)`);
+        
+        todosLeiloes = [];
+        
+        snapshot.forEach((doc) => {
+          todosLeiloes.push({
+            id: doc.id,
+            data: doc.data()
+          });
+        });
+        
+        // Ordenar leilões por status e data
+        todosLeiloes.sort((a, b) => {
+          const statusA = calcularStatusLeilao(a.data.inicio, a.data.fim);
+          const statusB = calcularStatusLeilao(b.data.inicio, b.data.fim);
+          
+          // Ordem de prioridade: ativo -> em-breve -> finalizado
+          const ordemStatus = {
+            'ativo': 1,
+            'em-breve': 2,
+            'finalizado': 3
+          };
+          
+          if (ordemStatus[statusA] !== ordemStatus[statusB]) {
+            return ordemStatus[statusA] - ordemStatus[statusB];
+          }
+          
+          // Se mesmo status, ordenar por data de início
+          const dataA = converterDataFirestore(a.data.inicio);
+          const dataB = converterDataFirestore(b.data.inicio);
+          
+          if (statusA === 'em-breve') {
+            // Para em breve, ordenar por quem começa primeiro
+            return dataA - dataB;
+          } else if (statusA === 'ativo') {
+            // Para ativos, ordenar por quem termina primeiro
+            const fimA = converterDataFirestore(a.data.fim);
+            const fimB = converterDataFirestore(b.data.fim);
+            return fimA - fimB;
+          } else {
+            // Para finalizados, ordenar por quem terminou mais recentemente
+            const fimA = converterDataFirestore(a.data.fim);
+            const fimB = converterDataFirestore(b.data.fim);
+            return fimB - fimA;
+          }
+        });
+        
+        exibirLeiloesFiltrados();
+        
+        // Verificar e excluir leilões antigos
+        setTimeout(() => {
+          verificarExcluirLeiloesAntigos();
+        }, 2000); // Esperar 2 segundos para carregar tudo primeiro
+        
+      }, (error) => {
+        console.error("❌ Erro ao carregar leilões:", error);
+        listaDiv.innerHTML = `
+          <div class="sem-leiloes">
+            <h2>⚠️ Erro ao carregar leilões</h2>
+            <p>Tente recarregar a página ou verifique sua conexão.</p>
+            <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              🔄 Recarregar
+            </button>
+          </div>
+        `;
+      });
+      
+    } catch (error) {
+      console.error("❌ Erro geral:", error);
+    }
+  }
+
+  // Função para excluir manualmente um leilão finalizado
+  window.excluirLeilaoManual = async function(leilaoId, titulo) {
+    if (!confirm(`Tem certeza que deseja excluir o leilão "${titulo}" manualmente?`)) return;
+    
+    try {
+      await deleteDoc(doc(db, "leiloes", leilaoId));
+      alert("✅ Leilão excluído manualmente!");
+      
+      // Recarregar a lista
+      carregarLeiloes();
+    } catch (error) {
+      console.error("❌ Erro ao excluir leilão manualmente:", error);
+      alert("Erro ao excluir leilão: " + error.message);
+    }
+  };
+
+  // Carregar leilões quando a página carregar
+  document.addEventListener('DOMContentLoaded', carregarLeiloes);
+  
+  // Adicionar botão para limpeza manual
+
+
+  document.body.appendChild(botaoLimpeza);
+
+</script>
+</body>
+</html>

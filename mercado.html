@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mercado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html, body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+}
+
+/* ===== HEADER ===== */
+.topo{
+  background:#111;
+  border-bottom:2px solid #d4af37;
+  width:100%;
+}
+
+.topo-container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+}
+
+.logo{
+  height:55px;
+}
+
+/* MENU DESKTOP */
+.menu{
+  margin-left:auto;
+  display:flex;
+  gap:18px;
+}
+
+.menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.menu a:hover{
+  color:#d4af37;
+}
+
+/* BOTÃO MOBILE */
+.menu-btn{
+  display:none;
+  margin-left:auto;
+  font-size:26px;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* MENU MOBILE */
+.menu-mobile{
+  display:none;
+  flex-direction:column;
+  background:#111;
+  border-top:1px solid #333;
+}
+
+.menu-mobile a{
+  padding:15px;
+  color:#fff;
+  text-decoration:none;
+  border-bottom:1px solid #222;
+  font-weight:bold;
+}
+
+.menu-mobile a:hover{
+  background:#1c1c1c;
+  color:#d4af37;
+}
+
+/* ===== SEÇÃO OFERTAS RELÂMPAGO ===== */
+.secao-relampago {
+  background: linear-gradient(to right, rgb(238, 77, 45), rgb(255, 115, 55));
+  padding: 20px 0;
+  margin-bottom: 30px;
+}
+
+.titulo-relampago {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.titulo-relampago h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.contador-relampago {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.container-relampago {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff6b00 #f2f2f2;
+}
+
+.container-relampago::-webkit-scrollbar {
+  height: 6px;
+}
+
+.container-relampago::-webkit-scrollbar-track {
+  background: #f2f2f2;
+  border-radius: 10px;
+}
+
+.container-relampago::-webkit-scrollbar-thumb {
+  background: #ff6b00;
+  border-radius: 10px;
+}
+
+.card-relampago {
+  flex: 0 0 250px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,.1);
+  transition: transform 0.3s;
+  position: relative;
+}
+
+.card-relampago:hover {
+  transform: translateY(-5px);
+}
+
+.badge-relampago {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff6b00;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 2;
+}
+
+.card-relampago .img-box {
+  height: 180px;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+}
+
+.card-relampago .img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.card-relampago .info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-relampago .info h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.card-relampago .desc {
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+
+.card-relampago .prices {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.card-relampago .old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+
+.card-relampago .new-price {
+  color: #ff6b00;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.card-relampago .discount {
+  background: #ff6b00;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.card-relampago .timer {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  color: #ff6b00;
+  font-weight: bold;
+}
+
+.card-relampago .buy-btn {
+  display: block;
+  width: 100%;
+  background: #ff6b00;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.card-relampago .buy-btn:hover {
+  background: #e55a00;
+}
+
+/* ===== PRODUTOS ===== */
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 15px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:20px;
+}
+
+.container h2 {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+  color: #333;
+}
+
+.card{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 15px rgba(0,0,0,.1);
+  transition:0.3s;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+.card:hover{
+  transform: translateY(-5px);
+}
+
+/* Área fixa da imagem */
+.card .img-box{
+  height:220px;
+  background:#f7f7f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+}
+
+.card .img-box img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
+
+.info{
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+
+.info h3{
+  margin-bottom:8px;
+  color: #333;
+}
+
+.preco{
+  color:#27ae60;
+  font-size:20px;
+  font-weight:bold;
+  margin-top:auto;
+}
+
+/* Para produtos em oferta */
+.card.em-oferta .preco {
+  color: #ff6b00;
+}
+
+.card.em-oferta .old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.card.em-oferta .price-container {
+  display: flex;
+  align-items: center;
+}
+
+/* ===== RESPONSIVO ===== */
+@media(max-width:768px){
+  .menu{
+    display:none;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .menu-mobile.ativo{
+    display:flex;
+  }
+  
+  .card-relampago {
+    flex: 0 0 200px;
+  }
+  
+  .card-relampago .img-box {
+    height: 150px;
+  }
+}
+
+@media(max-width:480px){
+  .card-relampago {
+    flex: 0 0 180px;
+  }
+  
+  .card-relampago .img-box {
+    height: 120px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="topo">
+  <div class="topo-container">
+    <img src="silvv.png" class="logo">
+
+    <nav class="menu">
+      <a href="mercado.html">Mercado</a>
+      <a href="leilao.html">Leilão</a>
+      <a href="venda-para-nos.html">Venda para nós</a>
+    </nav>
+
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="menu-mobile" id="menuMobile">
+    <a href="mercado.html">Mercado</a>
+    <a href="leilao.html">Leilão</a>
+    <a href="venda-para-nos.html">Venda para nós</a>
+  </div>
+</header>
+
+<!-- SEÇÃO OFERTAS RELÂMPAGO -->
+<div id="secaoRelampago" style="display: none;">
+  <div class="secao-relampago">
+    <div class="titulo-relampago">
+      <h2>⚡ Ofertas Relâmpago</h2>
+      <div class="contador-relampago">
+        <span>⏰ Termina em:</span>
+        <span id="contadorGlobal">--:--:--</span>
+      </div>
+    </div>
+    <div class="container-relampago" id="containerRelampago">
+      <!-- Ofertas serão carregadas aqui -->
+    </div>
+  </div>
+</div>
+
+<!-- PRODUTOS -->
+<div class="container" id="listaProdutos">
+  <h2>🎁 Todos os Produtos</h2>
+</div>
+
+<!-- MENU MOBILE JS -->
+<script>
+function toggleMenu(){
+  document.getElementById("menuMobile").classList.toggle("ativo");
+}
+
+function formatarMoedaBrasileira(valor) {
+  const numero = parseFloat(valor) || 0;
+  return numero.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function calcularTempoRestante(fim) {
+  try {
+    const agora = new Date();
+    const dataFim = fim.toDate ? fim.toDate() : new Date(fim);
+    const diffMs = dataFim - agora;
+    
+    if (diffMs <= 0) return '00:00:00';
+    
+    const horas = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
+    
+    return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+  } catch (e) {
+    return '00:00:00';
+  }
+}
+
+// Função para comprar produto (pode ser personalizada)
+function comprarProduto(produtoId, isOferta = false) {
+  if (isOferta) {
+    alert(`Redirecionando para compra da oferta relâmpago ${produtoId}`);
+    // window.location.href = `comprar.html?oferta=${produtoId}`;
+  } else {
+    alert(`Redirecionando para produto ${produtoId}`);
+    // window.location.href = `produto.html?id=${produtoId}`;
+  }
+}
+</script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, onSnapshot, getDocs, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const lista = document.getElementById("listaProdutos");
+const secaoRelampago = document.getElementById("secaoRelampago");
+const containerRelampago = document.getElementById("containerRelampago");
+const contadorGlobal = document.getElementById("contadorGlobal");
+
+// Mapa para armazenar os timers ativos
+const timersAtivos = new Map();
+
+// Função para atualizar contador global
+function atualizarContadorGlobal() {
+  const agora = new Date();
+  let menorTempo = Infinity;
+  
+  timersAtivos.forEach((dataFim) => {
+    const diffMs = dataFim - agora;
+    if (diffMs > 0 && diffMs < menorTempo) {
+      menorTempo = diffMs;
+    }
+  });
+  
+  if (menorTempo < Infinity && menorTempo > 0) {
+    const horas = Math.floor(menorTempo / (1000 * 60 * 60));
+    const minutos = Math.floor((menorTempo % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((menorTempo % (1000 * 60)) / 1000);
+    contadorGlobal.textContent = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+  } else {
+    contadorGlobal.textContent = '00:00:00';
+  }
+}
+
+// Carregar ofertas relâmpago
+async function carregarOfertasRelampago() {
+  try {
+    const relampagosRef = collection(db, "ofertasRelampago");
+    const snapshot = await getDocs(relampagosRef);
+    
+    const agora = new Date();
+    let temOfertasAtivas = false;
+    containerRelampago.innerHTML = '';
+    timersAtivos.clear();
+    
+    snapshot.forEach(docItem => {
+      const oferta = docItem.data();
+      
+      // Verificar se a oferta está ativa
+      const inicio = oferta.inicio?.toDate ? oferta.inicio.toDate() : new Date(oferta.inicio);
+      const fim = oferta.fim?.toDate ? oferta.fim.toDate() : new Date(oferta.fim);
+      
+      if (agora >= inicio && agora <= fim) {
+        temOfertasAtivas = true;
+        
+        // Armazenar data de término para o contador global
+        timersAtivos.set(docItem.id, fim);
+        
+        const card = document.createElement('div');
+        card.className = 'card-relampago';
+        card.dataset.id = docItem.id;
+        
+        card.innerHTML = `
+          <div class="badge-relampago">${oferta.desconto}% OFF</div>
+          <div class="img-box">
+            <img src="${oferta.imagem || 'https://via.placeholder.com/300x200/ff6b00/ffffff?text=Oferta+Rel%C3%A2mpago'}" alt="${oferta.titulo}">
+          </div>
+          <div class="info">
+            <h3>${oferta.titulo}</h3>
+            <div class="desc">${oferta.produtoDescricao || 'Aproveite esta oferta por tempo limitado!'}</div>
+            <div class="prices">
+              <span class="old-price">${formatarMoedaBrasileira(oferta.precoOriginal)}</span>
+              <span class="new-price">${formatarMoedaBrasileira(oferta.precoFinal)}</span>
+              <span class="discount">-${oferta.desconto}%</span>
+            </div>
+            <div class="timer" id="timer-${docItem.id}">
+              ⏱️ ${calcularTempoRestante(oferta.fim)}
+            </div>
+            <button class="buy-btn" onclick="comprarProduto('${docItem.id}', true)">COMPRAR AGORA</button>
+          </div>
+        `;
+        
+        containerRelampago.appendChild(card);
+        
+        // Atualizar contador individual a cada segundo
+        const timerElement = document.getElementById(`timer-${docItem.id}`);
+        if (timerElement) {
+          setInterval(() => {
+            timerElement.textContent = `⏱️ ${calcularTempoRestante(oferta.fim)}`;
+          }, 1000);
+        }
+      }
+    });
+    
+    if (temOfertasAtivas) {
+      secaoRelampago.style.display = 'block';
+      
+      // Iniciar atualização do contador global
+      setInterval(atualizarContadorGlobal, 1000);
+      atualizarContadorGlobal();
+    } else {
+      secaoRelampago.style.display = 'none';
+    }
+    
+  } catch (error) {
+    console.error("Erro ao carregar ofertas relâmpago:", error);
+  }
+}
+
+// Carregar produtos normais
+async function carregarProdutos() {
+  try {
+    const produtosRef = collection(db, "produtos");
+    const snapshot = await getDocs(produtosRef);
+    
+    lista.innerHTML = '<h2>🎁 Todos os Produtos</h2>';
+    
+    // Primeiro, verificar quais produtos estão em oferta
+    const relampagosRef = collection(db, "ofertasRelampago");
+    const relampagosSnapshot = await getDocs(relampagosRef);
+    const agora = new Date();
+    const produtosEmOferta = new Map();
+    
+    relampagosSnapshot.forEach(docItem => {
+      const oferta = docItem.data();
+      const inicio = oferta.inicio?.toDate ? oferta.inicio.toDate() : new Date(oferta.inicio);
+      const fim = oferta.fim?.toDate ? oferta.fim.toDate() : new Date(oferta.fim);
+      
+      if (agora >= inicio && agora <= fim && oferta.produtoId) {
+        produtosEmOferta.set(oferta.produtoId, {
+          precoFinal: oferta.precoFinal,
+          desconto: oferta.desconto,
+          precoOriginal: oferta.precoOriginal
+        });
+      }
+    });
+    
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      const produtoId = doc.id;
+      const emOferta = produtosEmOferta.has(produtoId);
+      
+      let precoHTML = '';
+      if (emOferta) {
+        const oferta = produtosEmOferta.get(produtoId);
+        precoHTML = `
+          <div class="price-container">
+            <span class="old-price">${formatarMoedaBrasileira(oferta.precoOriginal)}</span>
+            <div class="preco">${formatarMoedaBrasileira(oferta.precoFinal)}</div>
+          </div>
+        `;
+      } else {
+        precoHTML = `<div class="preco">${formatarMoedaBrasileira(p.preco)}</div>`;
+      }
+      
+      const cardClass = emOferta ? 'card em-oferta' : 'card';
+      
+      lista.innerHTML += `
+        <a href="produto.html?id=${doc.id}" style="text-decoration:none;color:inherit">
+          <div class="${cardClass}">
+            <div class="img-box">
+              <img src="${p.imagem}">
+              ${emOferta ? '<div style="position:absolute; top:10px; right:10px; background:#ff6b00; color:white; padding:3px 8px; border-radius:4px; font-size:12px; font-weight:bold;">OFERTA</div>' : ''}
+            </div>
+            <div class="info">
+              <h3>${p.nome}</h3>
+              ${precoHTML}
+            </div>
+          </div>
+        </a>
+      `;
+    });
+    
+  } catch (error) {
+    console.error("Erro ao carregar produtos:", error);
+    lista.innerHTML = `
+      <h2>🎁 Todos os Produtos</h2>
+      <div style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">
+        <p>Erro ao carregar produtos. Tente novamente mais tarde.</p>
+      </div>
+    `;
+  }
+}
+
+// Inicializar
+carregarOfertasRelampago();
+carregarProdutos();
+
+// Atualizar ofertas a cada 30 segundos
+setInterval(carregarOfertasRelampago, 30000);
+setInterval(carregarProdutos, 60000);
+</script>
+
+</body>
+</html>

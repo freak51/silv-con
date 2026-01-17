@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel ADM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  html, body{
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f4f4;
+  margin:0;
+  padding:20px;
+}
+section{
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  margin-bottom:30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  box-sizing: border-box;
+  border:1px solid #ddd;
+  border-radius:4px;
+}
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  background:#3483fa;
+  color:#fff;
+  margin-right:5px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+.card{
+  border:1px solid #ddd;
+  padding:15px;
+  margin-top:15px;
+  border-radius:6px;
+  position:relative;
+  background:#f9f9f9;
+}
+.btn-edit{background:#f1c40f;color:#000}
+.btn-del{background:#e74c3c}
+.btn-save{background:#2ecc71}
+.btn-cancel{background:#95a5a6}
+.status-badge{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:bold;
+  margin-left:10px;
+}
+.status-ativo{background:#2ecc71;color:white}
+.status-em-breve{background:#f39c12;color:white}
+.status-encerrado{background:#e74c3c;color:white}
+.status-relampago{background:#ff6b00;color:white}
+img{margin-top:5px;border-radius:6px; max-width:200px;}
+small{color:#555}
+
+/* Estilos para preview de imagem */
+.image-preview-container {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px dashed #ddd;
+  border-radius: 5px;
+}
+
+.image-preview {
+  max-width: 200px;
+  height: auto;
+  border-radius: 5px;
+  display: none;
+}
+
+.image-preview.active {
+  display: block;
+}
+
+.remove-image-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 5px;
+  display: none;
+}
+
+.remove-image-btn.active {
+  display: inline-block;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Estilos para miniaturas */
+.thumbnails-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbnail-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 2px solid transparent;
+}
+
+.thumbnail-preview.active {
+  border-color: #3483fa;
+}
+
+.thumbnail-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.thumbnail-item {
+  position: relative;
+}
+
+/* Estilo para contador relâmpago */
+.relampago-counter {
+  background: linear-gradient(to right, rgb(238, 77, 45), rgb(255, 115, 55));
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.relampago-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+@media(max-width:768px){
+  .menu{
+    display:none;
+  }
+}
+
+/* Estilos para notificações e participantes */
+.notificacao-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 6px;
+  position: relative;
+  background: #fff8e1;
+  border-left: 4px solid #ff9800;
+}
+
+.notificacao-lida {
+  background: #f9f9f9;
+  border-left: 4px solid #4caf50;
+}
+
+.participante-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 6px;
+  background: #f5f5f5;
+}
+
+.participante-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.participante-info-item {
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔐 Painel Administrativo</h1>
+
+
+
+<!-- Seção de Notificações -->
+<section>
+  <h2>🔔 Notificações de Leilões Encerrados</h2>
+  <div id="listaNotificacoes" style="margin-top:30px;">
+    <p id="loadingNotificacoes">Carregando notificações...</p>
+  </div>
+</section>
+
+<!-- Seção de Participantes -->
+<section>
+  <h2>👥 Participantes dos Leilões</h2>
+  <div class="form-group">
+    <label for="participanteLeilaoSelect">Selecione o Leilão:</label>
+    <select id="participanteLeilaoSelect">
+      <option value="">Selecione um leilão</option>
+    </select>
+  </div>
+  
+  <div id="detalhesParticipantes" style="margin-top:30px;">
+    <p>Selecione um leilão para ver os participantes...</p>
+  </div>
+</section>
+
+
+<!-- Seção de Ofertas Relâmpago -->
+<section>
+  <h2>⚡ Ofertas Relâmpago</h2>
+  
+  <div class="form-group">
+    <label for="rProdutoSelect">Produto:</label>
+    <select id="rProdutoSelect">
+      <option value="">Selecione um produto</option>
+    </select>
+  </div>
+  
+  <input id="rTitulo" placeholder="Título da oferta (ex: Flash Sale Smartphone)">
+  <input id="rDesconto" type="number" placeholder="Desconto em % (ex: 30)" min="1" max="99">
+  <input id="rPrecoOriginal" type="number" placeholder="Preço original" readonly>
+  <input id="rPrecoFinal" type="number" placeholder="Preço com desconto" readonly>
+  
+  <div class="form-group">
+    <label for="rDuracao">Duração da oferta:</label>
+    <select id="rDuracao">
+      <option value="1">1 hora</option>
+      <option value="3">3 horas</option>
+      <option value="6">6 horas</option>
+      <option value="12">12 horas</option>
+      <option value="24">24 horas</option>
+      <option value="48">48 horas</option>
+    </select>
+  </div>
+  
+  <input id="rInicio" type="datetime-local" placeholder="Data de início">
+  
+  <div class="form-group">
+    <label for="rImagemFile">Imagem da oferta (opcional):</label>
+    <input id="rImagemFile" type="file" accept="image/*">
+    <div class="image-preview-container" id="rImagemPreviewContainer">
+      <img id="rImagemPreview" class="image-preview" alt="Prévia da imagem">
+      <button type="button" class="remove-image-btn" id="rRemoveImagem">Remover Imagem</button>
+    </div>
+  </div>
+  
+  <button id="btnCriarRelampago">Criar Oferta Relâmpago</button>
+  <button id="btnAtualizarRelampago" class="btn-save" style="display:none">Atualizar Oferta</button>
+  <button id="btnCancelarEdicaoRelampago" class="btn-cancel" style="display:none">Cancelar</button>
+  
+  <div id="listaRelampagos" style="margin-top:30px;">
+    <h3>⚡ Ofertas Relâmpago Ativas</h3>
+    <p id="loadingRelampagos">Carregando ofertas...</p>
+  </div>
+</section>
+
+<!-- Seção de Leilões (existente) -->
+<section>
+  <h2>🏷️ Gerenciar Leilões</h2>
+  
+  <input id="lTitulo" placeholder="Título do leilão">
+  <input id="lValorInicial" type="number" placeholder="Valor inicial">
+  <input id="lLanceMin" type="number" placeholder="Lance mínimo">
+  <input id="lInicio" type="datetime-local" placeholder="Data de início">
+  <input id="lFim" type="datetime-local" placeholder="Data de término">
+  
+  <div class="form-group">
+    <label for="lImagemFile">Imagem do leilão:</label>
+    <input id="lImagemFile" type="file" accept="image/*">
+    <div class="image-preview-container" id="lImagemPreviewContainer">
+      <img id="lImagemPreview" class="image-preview" alt="Prévia da imagem">
+      <button type="button" class="remove-image-btn" id="lRemoveImagem">Remover Imagem</button>
+    </div>
+  </div>
+  
+  <button id="btnCriarLeilao">Criar Leilão</button>
+  <button id="btnAtualizarLeilao" class="btn-save" style="display:none">Atualizar Leilão</button>
+  <button id="btnCancelarEdicao" class="btn-cancel" style="display:none">Cancelar</button>
+  
+  <div id="listaLelioes" style="margin-top:30px;">
+    <h3>📋 Leilões Cadastrados</h3>
+    <p id="loadingLeiloes">Carregando leilões...</p>
+  </div>
+</section>
+
+<!-- Seção de Produtos (existente) -->
+<section>
+<h2>📦 Produtos</h2>
+
+<input id="pNome" placeholder="Nome do produto">
+<input id="pPreco" type="number" placeholder="Preço">
+
+<div class="form-group">
+  <label for="pImagemFile">Imagem principal do produto:</label>
+  <input id="pImagemFile" type="file" accept="image/*">
+  <div class="image-preview-container" id="pImagemPreviewContainer">
+    <img id="pImagemPreview" class="image-preview" alt="Prévia da imagem principal">
+    <button type="button" class="remove-image-btn" id="pRemoveImagem">Remover Imagem</button>
+  </div>
+</div>
+
+<div class="form-group">
+  <label for="pMiniaturasFile">Miniaturas do produto (múltiplas imagens):</label>
+  <input id="pMiniaturasFile" type="file" accept="image/*" multiple>
+  <div class="thumbnails-container" id="pMiniaturasPreviewContainer"></div>
+</div>
+
+<textarea id="pDesc" placeholder="Descrição curta (card)"></textarea>
+<textarea id="pDetalhes" placeholder="Detalhes completos do produto"></textarea>
+
+<button id="btnSalvarProduto">Salvar Produto</button>
+
+<div id="listaProdutos">
+  <p id="loadingProdutos">Carregando produtos...</p>
+</div>
+</section>
+
+<script type="module">
+
+/* =========================
+   IMPORTS
+========================= */
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  query,
+  orderBy,
+  getDocs,
+  getDoc,
+  where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// FUNÇÃO PARA FORMATAR MOEDA BRASILEIRA
+function formatarMoedaBrasileira(valor) {
+  const numero = parseFloat(valor) || 0;
+  return numero.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// FUNÇÃO PARA FORMATAR DATA
+function formatarData(data) {
+  if (!data) return 'Não definida';
+  try {
+    const date = data.toDate ? data.toDate() : new Date(data);
+    return date.toLocaleString('pt-BR');
+  } catch (e) {
+    return 'Data inválida';
+  }
+}
+
+// FUNÇÃO PARA CALCULAR STATUS
+function calcularStatus(inicio, fim) {
+  try {
+    const agora = new Date();
+    const dataInicio = inicio ? (inicio.toDate ? inicio.toDate() : new Date(inicio)) : new Date();
+    const dataFim = fim ? (fim.toDate ? fim.toDate() : new Date(fim)) : new Date();
+    
+    if (agora < dataInicio) return 'em-breve';
+    if (agora >= dataInicio && agora <= dataFim) return 'ativo';
+    return 'encerrado';
+  } catch (e) {
+    return 'desconhecido';
+  }
+}
+
+// FUNÇÃO PARA CALCULAR TEMPO RESTANTE
+function calcularTempoRestante(fim) {
+  try {
+    const agora = new Date();
+    const dataFim = fim.toDate ? fim.toDate() : new Date(fim);
+    const diffMs = dataFim - agora;
+    
+    if (diffMs <= 0) return 'Encerrado';
+    
+    const horas = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
+    
+    return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+  } catch (e) {
+    return 'Erro no cálculo';
+  }
+}
+
+/* =========================
+   VARIÁVEIS GLOBAIS
+========================= */
+let editandoLeilaoId = null;
+let editandoProdutoId = null;
+let editandoRelampagoId = null;
+let produtoImagemPrincipal = null;
+let produtoMiniaturas = [];
+let relampagoImagem = null;
+
+/* =========================
+   FUNÇÕES PARA CONVERSÃO DE IMAGEM
+========================= */
+
+// Função para converter imagem em base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+/* =========================
+   FUNÇÕES PARA OFERTAS RELÂMPAGO
+========================= */
+
+// Carregar produtos no select
+async function carregarProdutosParaSelect() {
+  try {
+    const produtosRef = collection(db, "produtos");
+    const snapshot = await getDocs(produtosRef);
+    const select = document.getElementById('rProdutoSelect');
+    
+    // Limpar opções exceto a primeira
+    while (select.options.length > 1) {
+      select.remove(1);
+    }
+    
+    snapshot.forEach(doc => {
+      const produto = doc.data();
+      const option = document.createElement('option');
+      option.value = doc.id;
+      option.textContent = `${produto.nome} - ${formatarMoedaBrasileira(produto.preco)}`;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar produtos:", error);
+  }
+}
+
+// Calcular preços com desconto
+function calcularPrecosRelampago() {
+  const produtoId = document.getElementById('rProdutoSelect').value;
+  const desconto = parseFloat(document.getElementById('rDesconto').value) || 0;
+  const precoOriginal = document.getElementById('rPrecoOriginal').value;
+  
+  if (precoOriginal && desconto > 0) {
+    const precoFinal = precoOriginal * (1 - desconto / 100);
+    document.getElementById('rPrecoFinal').value = precoFinal.toFixed(2);
+  }
+}
+
+// Quando produto é selecionado, carregar preço
+document.getElementById('rProdutoSelect').addEventListener('change', async function() {
+  const produtoId = this.value;
+  if (produtoId) {
+    try {
+      const produtoRef = doc(db, "produtos", produtoId);
+      const produtoSnap = await getDoc(produtoRef);
+      
+      if (produtoSnap.exists()) {
+        const produto = produtoSnap.data();
+        document.getElementById('rPrecoOriginal').value = produto.preco;
+        document.getElementById('rTitulo').value = `Flash Sale: ${produto.nome}`;
+        calcularPrecosRelampago();
+        
+        // Mostrar imagem do produto
+        if (produto.imagem) {
+          document.getElementById('rImagemPreview').src = produto.imagem;
+          document.getElementById('rImagemPreview').classList.add('active');
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar produto:", error);
+    }
+  }
+});
+
+// Quando desconto é alterado
+document.getElementById('rDesconto').addEventListener('input', calcularPrecosRelampago);
+
+// Preview de imagem para oferta relâmpago
+document.getElementById('rImagemFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      relampagoImagem = file;
+      const preview = document.getElementById('rImagemPreview');
+      preview.src = e.target.result;
+      preview.classList.add('active');
+      document.getElementById('rRemoveImagem').classList.add('active');
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById('rRemoveImagem').addEventListener('click', function() {
+  document.getElementById('rImagemFile').value = '';
+  document.getElementById('rImagemPreview').classList.remove('active');
+  this.classList.remove('active');
+  relampagoImagem = null;
+});
+
+// Criar ou atualizar oferta relâmpago
+async function criarOuAtualizarRelampago() {
+  try {
+    const produtoId = document.getElementById('rProdutoSelect').value;
+    const titulo = document.getElementById('rTitulo').value.trim();
+    const desconto = parseFloat(document.getElementById('rDesconto').value);
+    const duracao = parseInt(document.getElementById('rDuracao').value);
+    const inicio = document.getElementById('rInicio').value;
+    
+    if (!produtoId || !titulo || !desconto || !duracao || !inicio) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+    
+    if (desconto <= 0 || desconto >= 100) {
+      alert("Desconto deve estar entre 1% e 99%");
+      return;
+    }
+    
+    // Buscar produto para pegar preço original
+    const produtoRef = doc(db, "produtos", produtoId);
+    const produtoSnap = await getDoc(produtoRef);
+    
+    if (!produtoSnap.exists()) {
+      alert("Produto não encontrado!");
+      return;
+    }
+    
+    const produto = produtoSnap.data();
+    const precoOriginal = produto.preco;
+    const precoFinal = precoOriginal * (1 - desconto / 100);
+    
+    // Calcular data de término
+    const inicioDate = new Date(inicio);
+    const fimDate = new Date(inicioDate.getTime() + (duracao * 60 * 60 * 1000));
+    
+    let imagemURL = "";
+    
+    // Processar imagem
+    if (relampagoImagem) {
+      try {
+        imagemURL = await fileToBase64(relampagoImagem);
+      } catch (error) {
+        console.error("Erro ao converter imagem:", error);
+      }
+    } else if (produto.imagem) {
+      // Usar imagem do produto se não houver imagem específica
+      imagemURL = produto.imagem;
+    }
+    
+    const dados = {
+      produtoId,
+      titulo,
+      desconto,
+      precoOriginal,
+      precoFinal,
+      duracaoHoras: duracao,
+      inicio: inicioDate,
+      fim: fimDate,
+      produtoNome: produto.nome,
+      produtoDescricao: produto.descricao || '',
+      atualizadoEm: serverTimestamp()
+    };
+    
+    if (imagemURL) {
+      dados.imagem = imagemURL;
+    }
+    
+    if (editandoRelampagoId) {
+      // Atualizar oferta existente
+      const relampagoRef = doc(db, "ofertasRelampago", editandoRelampagoId);
+      const relampagoSnap = await getDoc(relampagoRef);
+      
+      // Manter imagem existente se não tiver nova
+      if (!imagemURL && relampagoSnap.exists() && relampagoSnap.data().imagem) {
+        dados.imagem = relampagoSnap.data().imagem;
+      }
+      
+      await updateDoc(relampagoRef, dados);
+      alert("✅ Oferta relâmpago atualizada com sucesso!");
+      sairModoEdicaoRelampago();
+    } else {
+      // Criar nova oferta
+      dados.criadoEm = serverTimestamp();
+      dados.status = 'ativo';
+      dados.visivel = true;
+      
+      // Usar placeholder se não tiver imagem
+      if (!dados.imagem) {
+        dados.imagem = "https://via.placeholder.com/300x200/ff6b00/ffffff?text=Oferta+Rel%C3%A2mpago";
+      }
+      
+      await addDoc(collection(db, "ofertasRelampago"), dados);
+      alert("✅ Oferta relâmpago criada com sucesso!");
+    }
+    
+    limparFormularioRelampago();
+    
+  } catch (error) {
+    console.error("❌ ERRO ao salvar oferta relâmpago:", error);
+    alert("Erro ao salvar oferta: " + error.message);
+  }
+}
+
+function limparFormularioRelampago() {
+  document.getElementById('rProdutoSelect').value = '';
+  document.getElementById('rTitulo').value = '';
+  document.getElementById('rDesconto').value = '';
+  document.getElementById('rPrecoOriginal').value = '';
+  document.getElementById('rPrecoFinal').value = '';
+  document.getElementById('rDuracao').value = '1';
+  document.getElementById('rInicio').value = '';
+  document.getElementById('rImagemFile').value = '';
+  document.getElementById('rImagemPreview').classList.remove('active');
+  document.getElementById('rRemoveImagem').classList.remove('active');
+  editandoRelampagoId = null;
+  relampagoImagem = null;
+}
+
+function sairModoEdicaoRelampago() {
+  document.getElementById('btnCriarRelampago').style.display = 'inline-block';
+  document.getElementById('btnAtualizarRelampago').style.display = 'none';
+  document.getElementById('btnCancelarEdicaoRelampago').style.display = 'none';
+  limparFormularioRelampago();
+}
+
+function entrarModoEdicaoRelampago(oferta) {
+  document.getElementById('btnCriarRelampago').style.display = 'none';
+  document.getElementById('btnAtualizarRelampago').style.display = 'inline-block';
+  document.getElementById('btnCancelarEdicaoRelampago').style.display = 'inline-block';
+  
+  document.getElementById('rTitulo').value = oferta.titulo || '';
+  document.getElementById('rDesconto').value = oferta.desconto || '';
+  document.getElementById('rPrecoOriginal').value = oferta.precoOriginal || '';
+  document.getElementById('rPrecoFinal').value = oferta.precoFinal || '';
+  document.getElementById('rDuracao').value = oferta.duracaoHoras || '1';
+  
+  // Formatar data para o input
+  if (oferta.inicio) {
+    const inicioDate = oferta.inicio.toDate ? oferta.inicio.toDate() : new Date(oferta.inicio);
+    document.getElementById('rInicio').value = inicioDate.toISOString().slice(0, 16);
+  }
+  
+  // Mostrar imagem existente
+  if (oferta.imagem) {
+    document.getElementById('rImagemPreview').src = oferta.imagem;
+    document.getElementById('rImagemPreview').classList.add('active');
+    document.getElementById('rRemoveImagem').classList.add('active');
+  }
+  
+  // Selecionar produto
+  if (oferta.produtoId) {
+    setTimeout(() => {
+      document.getElementById('rProdutoSelect').value = oferta.produtoId;
+    }, 100);
+  }
+  
+  editandoRelampagoId = oferta.id;
+}
+
+// Excluir oferta relâmpago
+async function excluirRelampago(id, titulo) {
+  if (!confirm(`Tem certeza que deseja excluir a oferta "${titulo}"?`)) return;
+  
+  try {
+    await deleteDoc(doc(db, "ofertasRelampago", id));
+    alert("✅ Oferta excluída com sucesso!");
+  } catch (error) {
+    console.error("❌ ERRO ao excluir oferta:", error);
+    alert("Erro ao excluir oferta: " + error.message);
+  }
+}
+
+// Renderizar ofertas relâmpago
+function renderizarRelampagos(snapshot) {
+  const container = document.getElementById("listaRelampagos");
+  const loadingElement = document.getElementById("loadingRelampagos");
+  
+  if (loadingElement) loadingElement.style.display = 'none';
+  
+  container.innerHTML = '<h3>⚡ Ofertas Relâmpago Ativas</h3>';
+  
+  if (snapshot.empty) {
+    container.innerHTML += '<p>Nenhuma oferta relâmpago cadastrada.</p>';
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const oferta = doc.data();
+    const ofertaId = doc.id;
+    const status = calcularStatus(oferta.inicio, oferta.fim);
+    
+    const statusTexto = {
+      'em-breve': 'Em Breve',
+      'ativo': 'Ativo',
+      'encerrado': 'Encerrado',
+      'desconhecido': 'Status Desconhecido'
+    }[status] || 'Desconhecido';
+    
+    const statusClass = {
+      'em-breve': 'status-em-breve',
+      'ativo': 'status-ativo',
+      'encerrado': 'status-encerrado'
+    }[status] || '';
+    
+    const tempoRestante = calcularTempoRestante(oferta.fim);
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = ofertaId;
+    
+    card.innerHTML = `
+      <strong>${oferta.titulo || 'Sem título'}</strong>
+      <span class="status-badge ${statusClass}">${statusTexto}</span>
+      <div class="relampago-counter">⏱️ ${tempoRestante}</div><br>
+      <small>Produto: ${oferta.produtoNome || 'Não especificado'}</small><br>
+      <small>Desconto: ${oferta.desconto || 0}%</small><br>
+      <small>Preço original: ${formatarMoedaBrasileira(oferta.precoOriginal)}</small><br>
+      <small>Preço com desconto: <strong>${formatarMoedaBrasileira(oferta.precoFinal)}</strong></small><br>
+      <small>Início: ${formatarData(oferta.inicio)}</small><br>
+      <small>Término: ${formatarData(oferta.fim)}</small><br>
+      ${oferta.imagem ? `<img src="${oferta.imagem}" alt="${oferta.titulo}" style="max-width: 200px; height: auto;">` : ''}
+      <div style="margin-top:10px;">
+        <button class="btn-edit" data-id="${ofertaId}">Editar</button>
+        <button class="btn-del" data-id="${ofertaId}">Excluir</button>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Adicionar event listeners
+  container.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      const ofertaDoc = snapshot.docs.find(d => d.id === id);
+      if (ofertaDoc) {
+        const oferta = { id: ofertaDoc.id, ...ofertaDoc.data() };
+        entrarModoEdicaoRelampago(oferta);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
+  
+  container.querySelectorAll('.btn-del').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      const ofertaDoc = snapshot.docs.find(d => d.id === id);
+      if (ofertaDoc) {
+        const titulo = ofertaDoc.data().titulo || 'Oferta sem título';
+        excluirRelampago(id, titulo);
+      }
+    });
+  });
+}
+
+// Carregar ofertas relâmpago
+async function carregarRelampagos() {
+  try {
+    console.log("📥 Carregando ofertas relâmpago...");
+    const relampagosRef = collection(db, "ofertasRelampago");
+    const snapshot = await getDocs(relampagosRef);
+    
+    console.log(`✅ ${snapshot.size} ofertas relâmpago encontradas`);
+    renderizarRelampagos(snapshot);
+    
+    // Escutar atualizações em tempo real
+    onSnapshot(relampagosRef, (snapshot) => {
+      console.log("🔄 Atualização em tempo real das ofertas");
+      renderizarRelampagos(snapshot);
+    });
+    
+  } catch (error) {
+    console.error("❌ ERRO ao carregar ofertas relâmpago:", error);
+    document.getElementById("listaRelampagos").innerHTML = `
+      <div class="error">
+        <h3>Erro ao carregar ofertas relâmpago</h3>
+        <p>${error.message}</p>
+        <button onclick="carregarRelampagos()" style="margin-top: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Tentar novamente
+        </button>
+      </div>
+    `;
+  }
+}
+
+/* =========================
+   FUNÇÕES PARA LEILÕES (existentes)
+========================= */
+
+// Preview de imagem para leilão
+document.getElementById('lImagemFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('lImagemPreview');
+      preview.src = e.target.result;
+      preview.classList.add('active');
+      document.getElementById('lRemoveImagem').classList.add('active');
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById('lRemoveImagem').addEventListener('click', function() {
+  document.getElementById('lImagemFile').value = '';
+  document.getElementById('lImagemPreview').classList.remove('active');
+  this.classList.remove('active');
+});
+
+// Criar ou atualizar leilão
+async function criarOuAtualizarLeilao() {
+  try {
+    const titulo = document.getElementById('lTitulo').value.trim();
+    const valorInicial = Number(document.getElementById('lValorInicial').value);
+    const lanceMinimo = Number(document.getElementById('lLanceMin').value);
+    const inicio = document.getElementById('lInicio').value;
+    const fim = document.getElementById('lFim').value;
+    const fileInput = document.getElementById('lImagemFile');
+    const file = fileInput.files[0];
+
+    if (!titulo || !inicio || !fim || valorInicial <= 0 || lanceMinimo <= 0) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    let imagemURL = "";
+
+    if (file) {
+      try {
+        imagemURL = await fileToBase64(file);
+      } catch (error) {
+        console.error("Erro ao converter imagem:", error);
+        alert("Erro ao processar a imagem");
+        return;
+      }
+    }
+
+    const dados = {
+      titulo,
+      valorInicial,
+      lanceMinimo,
+      inicio: new Date(inicio),
+      fim: new Date(fim),
+      atualizadoEm: serverTimestamp()
+    };
+
+    if (imagemURL) {
+      dados.imagem = imagemURL;
+    }
+
+    if (editandoLeilaoId) {
+      const leilaoRef = doc(db, "leiloes", editandoLeilaoId);
+      const leilaoSnap = await getDoc(leilaoRef);
+      
+      if (!imagemURL && leilaoSnap.exists() && leilaoSnap.data().imagem) {
+        dados.imagem = leilaoSnap.data().imagem;
+      }
+      
+      await updateDoc(leilaoRef, dados);
+      alert("✅ Leilão atualizado com sucesso!");
+      sairModoEdicao();
+    } else {
+      dados.criadoEm = serverTimestamp();
+      dados.maiorLance = valorInicial;
+      dados.maiorLanceUid = null;
+      dados.totalLances = 0;
+      
+      if (!dados.imagem) {
+        dados.imagem = "https://via.placeholder.com/300x200/CCCCCC/666666?text=Sem+Imagem";
+      }
+      
+      await addDoc(collection(db, "leiloes"), dados);
+      alert("✅ Leilão criado com sucesso!");
+    }
+
+    limparFormularioLeilao();
+    
+  } catch (error) {
+    console.error("❌ ERRO ao salvar leilão:", error);
+    alert("Erro ao salvar leilão: " + error.message);
+  }
+}
+
+function limparFormularioLeilao() {
+  document.getElementById('lTitulo').value = "";
+  document.getElementById('lValorInicial').value = "";
+  document.getElementById('lLanceMin').value = "";
+  document.getElementById('lInicio').value = "";
+  document.getElementById('lFim').value = "";
+  document.getElementById('lImagemFile').value = "";
+  document.getElementById('lImagemPreview').classList.remove('active');
+  document.getElementById('lRemoveImagem').classList.remove('active');
+  editandoLeilaoId = null;
+}
+
+function sairModoEdicao() {
+  document.getElementById('btnCriarLeilao').style.display = 'inline-block';
+  document.getElementById('btnAtualizarLeilao').style.display = 'none';
+  document.getElementById('btnCancelarEdicao').style.display = 'none';
+  limparFormularioLeilao();
+}
+
+function entrarModoEdicao(leilao) {
+  document.getElementById('btnCriarLeilao').style.display = 'none';
+  document.getElementById('btnAtualizarLeilao').style.display = 'inline-block';
+  document.getElementById('btnCancelarEdicao').style.display = 'inline-block';
+  
+  document.getElementById('lTitulo').value = leilao.titulo || "";
+  document.getElementById('lValorInicial').value = leilao.valorInicial || "";
+  document.getElementById('lLanceMin').value = leilao.lanceMinimo || "";
+  
+  if (leilao.inicio) {
+    const inicioDate = leilao.inicio.toDate ? leilao.inicio.toDate() : new Date(leilao.inicio);
+    document.getElementById('lInicio').value = inicioDate.toISOString().slice(0, 16);
+  }
+  
+  if (leilao.fim) {
+    const fimDate = leilao.fim.toDate ? leilao.fim.toDate() : new Date(leilao.fim);
+    document.getElementById('lFim').value = fimDate.toISOString().slice(0, 16);
+  }
+  
+  if (leilao.imagem) {
+    document.getElementById('lImagemPreview').src = leilao.imagem;
+    document.getElementById('lImagemPreview').classList.add('active');
+    document.getElementById('lRemoveImagem').classList.add('active');
+  }
+  
+  editandoLeilaoId = leilao.id;
+}
+
+// Excluir leilão
+async function excluirLeilao(id, titulo) {
+  if (!confirm(`Tem certeza que deseja excluir o leilão "${titulo}"?`)) return;
+  
+  try {
+    await deleteDoc(doc(db, "leiloes", id));
+    alert("✅ Leilão excluído com sucesso!");
+  } catch (error) {
+    console.error("❌ ERRO ao excluir leilão:", error);
+    alert("Erro ao excluir leilão: " + error.message);
+  }
+}
+
+/* =========================
+   FUNÇÕES PARA PRODUTOS (existentes)
+========================= */
+
+// Preview de imagem para produto principal
+document.getElementById('pImagemFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      produtoImagemPrincipal = file;
+      const preview = document.getElementById('pImagemPreview');
+      preview.src = e.target.result;
+      preview.classList.add('active');
+      document.getElementById('pRemoveImagem').classList.add('active');
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById('pRemoveImagem').addEventListener('click', function() {
+  document.getElementById('pImagemFile').value = '';
+  document.getElementById('pImagemPreview').classList.remove('active');
+  this.classList.remove('active');
+  produtoImagemPrincipal = null;
+});
+
+// Preview de miniaturas para produto
+document.getElementById('pMiniaturasFile').addEventListener('change', function(e) {
+  const files = Array.from(e.target.files);
+  const container = document.getElementById('pMiniaturasPreviewContainer');
+  
+  files.forEach(file => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const thumbnailItem = document.createElement('div');
+        thumbnailItem.className = 'thumbnail-item';
+        
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'thumbnail-preview active';
+        
+        const removeBtn = document.createElement('div');
+        removeBtn.className = 'thumbnail-remove';
+        removeBtn.innerHTML = '×';
+        removeBtn.onclick = function() {
+          const index = produtoMiniaturas.findIndex(item => item.file === file);
+          if (index > -1) {
+            produtoMiniaturas.splice(index, 1);
+          }
+          container.removeChild(thumbnailItem);
+        };
+        
+        thumbnailItem.appendChild(img);
+        thumbnailItem.appendChild(removeBtn);
+        container.appendChild(thumbnailItem);
+        
+        produtoMiniaturas.push({
+          file: file,
+          base64: e.target.result
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+});
+
+// Salvar produto
+async function salvarProduto() {
+  try {
+    const nome = document.getElementById('pNome').value.trim();
+    const preco = Number(document.getElementById('pPreco').value);
+    
+    if (!nome || !preco) {
+      alert("Preencha nome e preço");
+      return;
+    }
+
+    const dados = {
+      nome,
+      preco,
+      descricao: document.getElementById('pDesc').value.trim(),
+      detalhes: document.getElementById('pDetalhes').value
+        ? document.getElementById('pDetalhes').value.split("\n").map(d => d.trim()).filter(Boolean)
+        : [],
+      atualizadoEm: serverTimestamp()
+    };
+
+    // Processar imagem principal
+    if (produtoImagemPrincipal) {
+      try {
+        dados.imagem = await fileToBase64(produtoImagemPrincipal);
+      } catch (error) {
+        console.error("Erro ao converter imagem principal:", error);
+        alert("Erro ao processar a imagem principal");
+        return;
+      }
+    }
+
+    // Processar miniaturas
+    const miniaturasBase64 = [];
+    for (const miniatura of produtoMiniaturas) {
+      try {
+        const base64 = await fileToBase64(miniatura.file);
+        miniaturasBase64.push(base64);
+      } catch (error) {
+        console.error("Erro ao converter miniatura:", error);
+      }
+    }
+    
+    if (miniaturasBase64.length > 0) {
+      dados.imagens = miniaturasBase64;
+    }
+
+    if (editandoProdutoId) {
+      const produtoRef = doc(db, "produtos", editandoProdutoId);
+      const produtoSnap = await getDoc(produtoRef);
+      
+      if (!dados.imagem && produtoSnap.exists() && produtoSnap.data().imagem) {
+        dados.imagem = produtoSnap.data().imagem;
+      }
+      
+      if (!dados.imagens && produtoSnap.exists() && produtoSnap.data().imagens) {
+        dados.imagens = produtoSnap.data().imagens;
+      }
+      
+      await updateDoc(produtoRef, dados);
+      alert("✅ Produto atualizado com sucesso!");
+    } else {
+      if (!dados.imagem) {
+        dados.imagem = "https://via.placeholder.com/300x300/CCCCCC/666666?text=Sem+Imagem";
+      }
+      
+      dados.criadoEm = serverTimestamp();
+      await addDoc(collection(db, "produtos"), dados);
+      alert("✅ Produto criado com sucesso!");
+    }
+
+    limparFormularioProduto();
+    
+  } catch (error) {
+    console.error("❌ ERRO ao salvar produto:", error);
+    alert("Erro ao salvar produto: " + error.message);
+  }
+}
+
+function limparFormularioProduto() {
+  document.getElementById('pNome').value = "";
+  document.getElementById('pPreco').value = "";
+  document.getElementById('pImagemFile').value = "";
+  document.getElementById('pMiniaturasFile').value = "";
+  document.getElementById('pDesc').value = "";
+  document.getElementById('pDetalhes').value = "";
+  document.getElementById('pImagemPreview').classList.remove('active');
+  document.getElementById('pRemoveImagem').classList.remove('active');
+  document.getElementById('pMiniaturasPreviewContainer').innerHTML = "";
+  produtoImagemPrincipal = null;
+  produtoMiniaturas = [];
+  editandoProdutoId = null;
+}
+
+/* =========================
+   LISTAGEM DE LEILÕES
+========================= */
+function renderizarLeiloes(snapshot) {
+  const container = document.getElementById("listaLelioes");
+  const loadingElement = document.getElementById("loadingLeiloes");
+  
+  if (loadingElement) loadingElement.style.display = 'none';
+  
+  container.innerHTML = '<h3>📋 Leilões Cadastrados</h3>';
+  
+  if (snapshot.empty) {
+    container.innerHTML += '<p>Nenhum leilão cadastrado.</p>';
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const leilao = doc.data();
+    const leilaoId = doc.id;
+    const status = calcularStatus(leilao.inicio, leilao.fim);
+    
+    const statusTexto = {
+      'em-breve': 'Em Breve',
+      'ativo': 'Ativo',
+      'encerrado': 'Encerrado',
+      'desconhecido': 'Status Desconhecido'
+    }[status] || 'Desconhecido';
+    
+    const statusClass = {
+      'em-breve': 'status-em-breve',
+      'ativo': 'status-ativo',
+      'encerrado': 'status-encerrado'
+    }[status] || '';
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = leilaoId;
+    
+    card.innerHTML = `
+      <strong>${leilao.titulo || 'Sem título'}</strong>
+      <span class="status-badge ${statusClass}">${statusTexto}</span><br>
+      <small>Início: ${formatarData(leilao.inicio)}</small><br>
+      <small>Término: ${formatarData(leilao.fim)}</small><br>
+      <small>Valor inicial: ${formatarMoedaBrasileira(leilao.valorInicial)}</small><br>
+      <small>Lance mínimo: ${formatarMoedaBrasileira(leilao.lanceMinimo)}</small><br>
+      ${leilao.imagem ? `<img src="${leilao.imagem}" alt="${leilao.titulo}" style="max-width: 200px; height: auto;">` : ''}
+      <div style="margin-top:10px;">
+        <button class="btn-edit" data-id="${leilaoId}">Editar</button>
+        <button class="btn-del" data-id="${leilaoId}">Excluir</button>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Adicionar event listeners para os botões
+  container.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      const leilaoDoc = snapshot.docs.find(d => d.id === id);
+      if (leilaoDoc) {
+        const leilao = { id: leilaoDoc.id, ...leilaoDoc.data() };
+        entrarModoEdicao(leilao);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
+  
+  container.querySelectorAll('.btn-del').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      const leilaoDoc = snapshot.docs.find(d => d.id === id);
+      if (leilaoDoc) {
+        const titulo = leilaoDoc.data().titulo || 'Leilão sem título';
+        excluirLeilao(id, titulo);
+      }
+    });
+  });
+}
+
+// Carregar leilões
+async function carregarLeiloes() {
+  try {
+    console.log("📥 Carregando leilões...");
+    const leiloesRef = collection(db, "leiloes");
+    const snapshot = await getDocs(leiloesRef);
+    
+    console.log(`✅ ${snapshot.size} leilões encontrados`);
+    renderizarLeiloes(snapshot);
+    
+    onSnapshot(leiloesRef, (snapshot) => {
+      console.log("🔄 Atualização em tempo real dos leilões");
+      renderizarLeiloes(snapshot);
+    });
+    
+  } catch (error) {
+    console.error("❌ ERRO ao carregar leilões:", error);
+    document.getElementById("listaLelioes").innerHTML = `
+      <div class="error">
+        <h3>Erro ao carregar leilões</h3>
+        <p>${error.message}</p>
+        <button onclick="carregarLeiloes()" style="margin-top: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Tentar novamente
+        </button>
+      </div>
+    `;
+  }
+}
+
+/* =========================
+   LISTAGEM DE PRODUTOS
+========================= */
+function renderizarProdutos(snapshot) {
+  const container = document.getElementById("listaProdutos");
+  const loadingElement = document.getElementById("loadingProdutos");
+  
+  if (loadingElement) loadingElement.style.display = 'none';
+  
+  container.innerHTML = "";
+  
+  if (snapshot.empty) {
+    container.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+    return;
+  }
+
+  console.log("📊 Produtos encontrados:", snapshot.size);
+  
+  snapshot.forEach(doc => {
+    const produto = doc.data();
+    const produtoId = doc.id;
+    
+    console.log("Produto encontrado:", produto);
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = produtoId;
+    
+    card.innerHTML = `
+      <strong>${produto.nome || 'Sem nome'}</strong> — ${formatarMoedaBrasileira(produto.preco || 0)}<br>
+      ${produto.imagem ? `<img src="${produto.imagem}" width="80" style="border-radius: 4px;"><br>` : ''}
+      ${produto.descricao ? `<small>${produto.descricao}</small><br>` : ''}
+      ${produto.imagens && produto.imagens.length > 0 ? `<small>${produto.imagens.length} miniatura(s)</small><br>` : ''}
+      <button class="btn-edit" data-id="${produtoId}">Editar</button>
+      <button class="btn-del" data-id="${produtoId}">Excluir</button>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Adicionar event listeners para os botões
+  container.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      const produtoDoc = snapshot.docs.find(d => d.id === id);
+      if (produtoDoc) {
+        const produto = produtoDoc.data();
+        editandoProdutoId = id;
+        
+        document.getElementById('pNome').value = produto.nome || "";
+        document.getElementById('pPreco').value = produto.preco || "";
+        document.getElementById('pDesc').value = produto.descricao || "";
+        document.getElementById('pDetalhes').value = Array.isArray(produto.detalhes) ? produto.detalhes.join("\n") : produto.detalhes || "";
+        
+        if (produto.imagem) {
+          document.getElementById('pImagemPreview').src = produto.imagem;
+          document.getElementById('pImagemPreview').classList.add('active');
+          document.getElementById('pRemoveImagem').classList.add('active');
+        }
+        
+        if (produto.imagens && produto.imagens.length > 0) {
+          const container = document.getElementById('pMiniaturasPreviewContainer');
+          container.innerHTML = "";
+          produto.imagens.forEach((imagemUrl, index) => {
+            const thumbnailItem = document.createElement('div');
+            thumbnailItem.className = 'thumbnail-item';
+            
+            const img = document.createElement('img');
+            img.src = imagemUrl;
+            img.className = 'thumbnail-preview active';
+            
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'thumbnail-remove';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() {
+              container.removeChild(thumbnailItem);
+            };
+            
+            thumbnailItem.appendChild(img);
+            thumbnailItem.appendChild(removeBtn);
+            container.appendChild(thumbnailItem);
+          });
+        }
+        
+        const formularioProdutos = document.querySelector('section:nth-child(3)');
+        if (formularioProdutos) {
+          formularioProdutos.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        alert("✏️ Editando produto: " + (produto.nome || "Sem nome"));
+      }
+    });
+  });
+  
+  container.querySelectorAll('.btn-del').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      const produtoDoc = snapshot.docs.find(d => d.id === id);
+      if (produtoDoc) {
+        const nome = produtoDoc.data().nome || 'Produto';
+        if (confirm(`Excluir produto "${nome}"?`)) {
+          try {
+            await deleteDoc(doc(db, "produtos", id));
+            alert("✅ Produto excluído!");
+          } catch (error) {
+            console.error("❌ ERRO ao excluir:", error);
+            alert("Erro ao excluir produto: " + error.message);
+          }
+        }
+      }
+    });
+  });
+}
+
+// Carregar produtos
+async function carregarProdutos() {
+  try {
+    console.log("📥 Carregando produtos...");
+    const produtosRef = collection(db, "produtos");
+    const snapshot = await getDocs(produtosRef);
+    
+    console.log(`✅ ${snapshot.size} produtos encontrados no total`);
+    
+    snapshot.forEach(doc => {
+      console.log(`📄 ID: ${doc.id}`, doc.data());
+    });
+    
+    if (snapshot.empty) {
+      console.log("⚠️ Nenhum produto encontrado na coleção");
+      renderizarProdutos(snapshot);
+    } else {
+      renderizarProdutos(snapshot);
+    }
+    
+    onSnapshot(produtosRef, (snapshot) => {
+      console.log("🔄 Atualização em tempo real dos produtos");
+      console.log(`Total de produtos agora: ${snapshot.size}`);
+      renderizarProdutos(snapshot);
+    });
+    
+  } catch (error) {
+    console.error("❌ ERRO ao carregar produtos:", error);
+    document.getElementById("listaProdutos").innerHTML = `
+      <div class="error">
+        <h3>Erro ao carregar produtos</h3>
+        <p>${error.message}</p>
+        <p>Verifique se a coleção "produtos" existe no Firestore.</p>
+        <button onclick="carregarProdutos()" style="margin-top: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Tentar novamente
+        </button>
+      </div>
+    `;
+  }
+}
+
+/* =========================
+   FUNÇÕES PARA NOTIFICAÇÕES
+========================= */
+
+// Renderizar notificações
+function renderizarNotificacoes(snapshot) {
+  const container = document.getElementById("listaNotificacoes");
+  const loadingElement = document.getElementById("loadingNotificacoes");
+  
+  if (loadingElement) loadingElement.style.display = 'none';
+  
+  container.innerHTML = '';
+  
+  if (snapshot.empty) {
+    container.innerHTML = '<p>Nenhuma notificação encontrada.</p>';
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const notificacao = doc.data();
+    const notificacaoId = doc.id;
+    
+    const card = document.createElement('div');
+    card.className = `notificacao-card ${notificacao.lida ? 'notificacao-lida' : ''}`;
+    card.dataset.id = notificacaoId;
+    
+    card.innerHTML = `
+      <strong>🏆 Leilão Encerrado: ${notificacao.leilaoTitulo || 'Sem título'}</strong>
+      <span class="status-badge ${notificacao.lida ? 'status-ativo' : 'status-em-breve'}" style="float:right;">
+        ${notificacao.lida ? '✅ LIDA' : '🔔 NOVA'}
+      </span><br>
+      <small>Encerrado em: ${formatarData(notificacao.dataEncerramento)}</small><br>
+      <div class="participante-info" style="margin-top:10px;">
+        <div class="participante-info-item">
+          <strong>🏆 Vencedor:</strong><br>
+          ${notificacao.vencedorNome || 'Não informado'}
+        </div>
+        <div class="participante-info-item">
+          <strong>📞 Contato:</strong><br>
+          ${notificacao.vencedorContato || 'Não informado'}
+        </div>
+        <div class="participante-info-item">
+          <strong>💰 Valor Final:</strong><br>
+          ${formatarMoedaBrasileira(notificacao.valorFinal)}
+        </div>
+      </div>
+      <div style="margin-top:15px;">
+        ${!notificacao.lida ? `
+          <button class="btn-save marcar-lida" data-id="${notificacaoId}">Marcar como Lida</button>
+        ` : ''}
+        <button class="btn-del excluir-notificacao" data-id="${notificacaoId}">Excluir</button>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+  
+  // Adicionar event listeners
+  container.querySelectorAll('.marcar-lida').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      await marcarNotificacaoComoLida(id);
+    });
+  });
+  
+  container.querySelectorAll('.excluir-notificacao').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      if (confirm('Excluir esta notificação?')) {
+        await excluirNotificacao(id);
+      }
+    });
+  });
+}
+
+// Marcar notificação como lida
+async function marcarNotificacaoComoLida(id) {
+  try {
+    await updateDoc(doc(db, "notificacoes", id), {
+      lida: true,
+      dataLeitura: new Date().toISOString()
+    });
+    console.log('✅ Notificação marcada como lida');
+  } catch (error) {
+    console.error('❌ ERRO ao marcar notificação:', error);
+    alert('Erro ao marcar notificação: ' + error.message);
+  }
+}
+
+// Excluir notificação
+async function excluirNotificacao(id) {
+  try {
+    await deleteDoc(doc(db, "notificacoes", id));
+    console.log('✅ Notificação excluída');
+  } catch (error) {
+    console.error('❌ ERRO ao excluir notificação:', error);
+    alert('Erro ao excluir notificação: ' + error.message);
+  }
+}
+
+// Carregar notificações
+async function carregarNotificacoes() {
+  try {
+    console.log("📥 Carregando notificações...");
+    const notificacoesRef = collection(db, "notificacoes");
+    const q = query(notificacoesRef, orderBy("dataCriacao", "desc"));
+    const snapshot = await getDocs(q);
+    
+    console.log(`✅ ${snapshot.size} notificações encontradas`);
+    renderizarNotificacoes(snapshot);
+    
+    // Escutar atualizações em tempo real
+    onSnapshot(q, (snapshot) => {
+      console.log("🔄 Atualização em tempo real das notificações");
+      renderizarNotificacoes(snapshot);
+    });
+    
+  } catch (error) {
+    console.error("❌ ERRO ao carregar notificações:", error);
+    document.getElementById("listaNotificacoes").innerHTML = `
+      <div class="error">
+        <h3>Erro ao carregar notificações</h3>
+        <p>${error.message}</p>
+      </div>
+    `;
+  }
+}
+
+/* =========================
+   FUNÇÕES PARA PARTICIPANTES
+========================= */
+
+// Carregar leilões no select
+async function carregarLeiloesParaSelect() {
+  try {
+    const leiloesRef = collection(db, "leiloes");
+    const snapshot = await getDocs(leiloesRef);
+    const select = document.getElementById('participanteLeilaoSelect');
+    
+    // Limpar opções exceto a primeira
+    while (select.options.length > 1) {
+      select.remove(1);
+    }
+    
+    snapshot.forEach(doc => {
+      const leilao = doc.data();
+      const option = document.createElement('option');
+      option.value = doc.id;
+      option.textContent = `${leilao.titulo} (${formatarData(leilao.inicio)})`;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar leilões:", error);
+  }
+}
+
+// Quando leilão é selecionado
+document.getElementById('participanteLeilaoSelect').addEventListener('change', async function() {
+  const leilaoId = this.value;
+  if (leilaoId) {
+    await carregarParticipantesLeilao(leilaoId);
+  } else {
+    document.getElementById('detalhesParticipantes').innerHTML = '<p>Selecione um leilão para ver os participantes...</p>';
+  }
+});
+
+// Carregar participantes de um leilão
+async function carregarParticipantesLeilao(leilaoId) {
+  try {
+    const participantesRef = collection(db, "participantes");
+    const q = query(participantesRef, where("leilaoId", "==", leilaoId));
+    const snapshot = await getDocs(q);
+    
+    const container = document.getElementById('detalhesParticipantes');
+    
+    if (snapshot.empty) {
+      container.innerHTML = '<p>Nenhum participante encontrado para este leilão.</p>';
+      return;
+    }
+    
+    let html = `<h3>👥 ${snapshot.size} Participante(s)</h3>`;
+    
+    snapshot.forEach(doc => {
+      const participante = doc.data();
+      
+      html += `
+        <div class="participante-card">
+          <strong>${participante.nome || 'Não informado'}</strong>
+          <div class="participante-info">
+            <div class="participante-info-item">
+              <strong>📞 Contato:</strong><br>
+              ${participante.contato || 'Não informado'}
+            </div>
+            <div class="participante-info-item">
+              <strong>📧 E-mail:</strong><br>
+              ${participante.email || 'Não informado'}
+            </div>
+            <div class="participante-info-item">
+              <strong>📅 Inscrição:</strong><br>
+              ${formatarData(participante.dataInscricao)}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    container.innerHTML = html;
+    
+  } catch (error) {
+    console.error("❌ ERRO ao carregar participantes:", error);
+    document.getElementById("detalhesParticipantes").innerHTML = `
+      <div class="error">
+        <p>Erro ao carregar participantes: ${error.message}</p>
+      </div>
+    `;
+  }
+}
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+// Vincular eventos
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+// Vincular eventos
+document.getElementById('btnCriarLeilao').addEventListener('click', criarOuAtualizarLeilao);
+document.getElementById('btnAtualizarLeilao').addEventListener('click', criarOuAtualizarLeilao);
+document.getElementById('btnCancelarEdicao').addEventListener('click', sairModoEdicao);
+document.getElementById('btnSalvarProduto').addEventListener('click', salvarProduto);
+document.getElementById('btnCriarRelampago').addEventListener('click', criarOuAtualizarRelampago);
+document.getElementById('btnAtualizarRelampago').addEventListener('click', criarOuAtualizarRelampago);
+document.getElementById('btnCancelarEdicaoRelampago').addEventListener('click', sairModoEdicaoRelampago);
+
+// Carregar dados
+carregarLeiloes();
+carregarProdutos();
+carregarRelampagos();
+carregarProdutosParaSelect();
+carregarNotificacoes();
+carregarLeiloesParaSelect();
+
+// Atualizar listas periodicamente
+setInterval(carregarProdutosParaSelect, 30000);
+setInterval(carregarLeiloesParaSelect, 60000);
+
+// Adicionar funções ao escopo global
+window.carregarLeiloes = carregarLeiloes;
+window.carregarProdutos = carregarProdutos;
+window.carregarRelampagos = carregarRelampagos;
+window.carregarNotificacoes = carregarNotificacoes;
+
+console.log("✅ Painel ADM inicializado com sistema de inscrição e notificações");
+</script>
+</body>
+</html>

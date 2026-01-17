@@ -1,0 +1,156 @@
+html, body{
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.venda-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+}
+
+h1 {
+  color: #FFC107;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.descricao {
+  color: #ccc;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.como-funciona {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.como-funciona h2 {
+  color: #FFC107;
+  margin-bottom: 10px;
+}
+
+.como-funciona ul {
+  list-style: none;
+}
+
+.como-funciona li {
+  margin: 8px 0;
+}
+
+.form-venda {
+  background: #2a2a2a;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.form-venda h2 {
+  margin-bottom: 20px;
+  color: #FFC107;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.campo label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.campo input,
+.campo textarea {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.campo textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #FFC107;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.header {
+  background: #2f2f2f;
+  width: 100%;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo img {
+  height: 55px;
+}
+
+.menu {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-menu {
+  width: 150px;
+  height: 42px;
+  background: #FFC107;
+  color: #000;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-menu:hover,
+.btn-menu.ativo {
+  background: #e0aa00;
+}
+
+
+.btn-menu:hover {
+  background: #e0aa00;
+}
+
+/* botão ativo (página atual) */
+.btn-menu.ativo {
+  background: #e0aa00;
+}
